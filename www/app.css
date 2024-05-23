@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --colour-primary: 60 20 96;
+        --colour-secondary: 0 0 10;
+        --colour-contrast-light: 0 0 68;
+        --colour-contrast: 0 0 76;
+        --colour-contrast-dark: 0 0 92;
+    }
+
+    .dark-colours {
+        --colour-primary: 60 20 4;
+        --colour-secondary: 0 0 90;
+        --colour-contrast-light: 0 0 32;
+        --colour-contrast: 0 0 24;
+        --colour-contrast-dark: 0 0 8;
+    }
+
+    body {
+        @apply bg-primary dark:dark-colours font-sans text-secondary;
+    }
+}
+
+@layer components {
+    .anchor {
+        @apply font-bold hover:underline;
+    }
+
+    .btn {
+        @apply bg-primary border border-contrast p-2 hover:border-secondary hover:shadow-lg transition-all;
+    }
+
+    .icon-btn {
+        @apply h-fit leading-[0px] text-contrast text-lg hover:text-secondary transition;
+    }
+    
+    .input {
+        @apply bg-primary border border-contrast hover:border-contrast-light focus:border-secondary px-4 py-2 focus:outline-none placeholder:text-contrast-light text-secondary transition-colors w-full;
+    }
+}
+
+@layer utilities {
+    .center-screen {
+        @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    @keyframes shake {
+		0% { transform: translateX(0); }
+		25% { transform: translateX(-8px); }
+		50% { transform: translateX(8px); }
+		75% { transform: translateX(-8px); }
+		100% { transform: translateX(0); }
+	}
+}

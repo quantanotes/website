@@ -1,0 +1,10 @@
+node_modules
+static/build
+ssr
+.git
+.dockerignore
+.gitignore
+fly.toml
+.env.example
+.env.dev
+README
