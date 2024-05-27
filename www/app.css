@@ -44,6 +44,18 @@
     .input {
         @apply bg-primary border border-contrast hover:border-contrast-light focus:border-secondary px-4 py-2 focus:outline-none placeholder:text-contrast-light text-secondary transition-colors w-full;
     }
+
+    .range {
+        @apply appearance-none bg-primary border border-contrast hover:border-secondary h-8 transition-colors;
+    }
+
+    .range::-webkit-slider-thumb {
+        @apply appearance-none bg-secondary cursor-pointer h-8 rounded-none w-8;
+    }
+
+    .range::-moz-range-thumb {
+        @apply appearance-none bg-secondary cursor-pointer h-8 rounded-none w-8;
+    }
 }
 
 @layer utilities {

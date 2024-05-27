@@ -27,7 +27,7 @@ func init() {
 		r.Get("/space/*", page("space", nil))
 		r.Get("/heisenberg", restrictedPage("heisenberg-public", "heisenberg", nil))
 
-		r.Get("/subscribe", page("subscribe", nil))
+		r.Get("/shop", page("shop", nil))
 
 		r.Get("/signin", page("signin", nil))
 		r.Get("/signup", page("signup", nil))
@@ -56,6 +56,8 @@ func init() {
 			// r.Post("/api/maxwell/create", maxwellCreate)
 			// r.Post("/api/maxwell/delete", maxwellUpdate)
 			r.Post("/api/maxwell/chat", maxwellChat)
+
+			r.Post("/api/billing/checkout", checkout)
 
 			r.Post("/api/permissions/grant", grant)
 			r.Post("/api/permissions/links/retrieve", retrieveLinks)

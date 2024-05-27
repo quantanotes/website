@@ -18,6 +18,7 @@ type User struct {
 	Email         string    `json:"email"`
 	Password      *string   `json:"password,omitempty"`
 	Image         *string   `json:"image,omitempty"`
+	CustomerId    *string
 }
 
 func GetUser(ctx context.Context, userId string) (User, error) {

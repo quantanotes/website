@@ -9,7 +9,7 @@ import (
 var Cache *redis.Client
 
 func init() {
-	opts, err := redis.ParseURL(globals.RedisURI)
+	opts, err := redis.ParseURL(globals.RedisURL)
 	if err != nil {
 		panic(err)
 	}
