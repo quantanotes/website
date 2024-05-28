@@ -29,12 +29,9 @@ func init() {
 
 		r.Get("/shop", page("shop", nil))
 
-		r.Get("/signin", page("signin", nil))
-		r.Get("/signup", page("signup", nil))
-		r.Get("/verify", page("verify", nil))
-		r.Get("/signin/*", page("signin", getQuery("redirect")))
-		r.Get("/signup/*", page("signup", getQuery("redirect")))
-		r.Get("/verify/*", page("verify", getQuery("redirect")))
+		r.Get("/signin", page("signin", getQuery("redirect")))
+		r.Get("/signup", page("signup", getQuery("redirect")))
+		r.Get("/verify/{code}", verify)
 
 		r.Post("/api/space/algorithm", spaceAlgorithm)
 		r.Post("/api/space/children", spaceChildren)

@@ -4,6 +4,9 @@ import (
 	"net/http"
 	"quanta/internal/model"
 	"quanta/internal/single"
+	"strings"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func signin(w http.ResponseWriter, r *http.Request) {
@@ -11,7 +14,6 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		Email    string
 		Password string
 	}
-
 	if err := jsonRequest(w, r, &req); err != nil {
 		return
 	}
@@ -20,6 +22,8 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		errorBadRequestResponse(w)
 		return
 	}
+
+	req.Email = strings.ToLower(req.Email)
 
 	sess, verified, err := model.VerifyUserAndCreateSession(r.Context(), req.Email, req.Password)
 	if err != nil {
@@ -30,18 +34,7 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := http.Cookie{
-		Name:     "session",
-		Value:    sess,
-		Path:     "/",
-		MaxAge:   60 * 60 * 24 * 30,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-	}
-
-	http.SetCookie(w, &cookie)
-
+	setSessionCookie(sess, w)
 	authorisedResponse(w)
 }
 
@@ -53,6 +46,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		PreferredName string `validate:"required,min=1,max=255"`
 		Password      string `validate:"required,password"`
 	}
+
+	redirect := r.URL.Query().Get("redirect")
 
 	if err := jsonRequest(w, r, &req); err != nil {
 		return
@@ -69,7 +64,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		FullName:      req.FullName,
 		PreferredName: req.PreferredName,
 		Password:      &req.Password,
-	}); err != nil {
+	}, redirect); err != nil {
 		errorInternalResponse(w, err)
 		return
 	}
@@ -78,15 +73,13 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func verify(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Code string
+	code := chi.URLParam(r, "code")
+	redirect := r.URL.Query().Get("redirect")
+	if redirect == "" {
+		redirect = "/"
 	}
 
-	if err := jsonRequest(w, r, &req); err != nil {
-		return
-	}
-
-	user, ok, err := model.GetVerificationUser(r.Context(), req.Code)
+	user, ok, err := model.GetVerificationUser(r.Context(), code)
 	if err != nil {
 		errorInternalResponse(w, err)
 		return
@@ -95,45 +88,47 @@ func verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := model.CreateUser(r.Context(), user); err != nil {
+	user.Email = strings.ToLower(user.Email)
+	if user, err = model.CreateUser(r.Context(), user); err != nil {
 		errorInternalResponse(w, err)
 		return
 	}
 
-	okResponse(w)
+	sess, _ := model.CreateSession(r.Context(), user.Id)
+	setSessionCookie(sess, w)
+	http.Redirect(w, r, redirect, http.StatusSeeOther)
 }
 
 func signout(w http.ResponseWriter, r *http.Request) {
 	sess := r.Context().Value("session").(string)
-
 	if err := model.DeleteSession(r.Context(), sess); err != nil {
 		errorInternalResponse(w, err)
 		return
 	}
-
-	cookie := http.Cookie{
-		Name:     "session",
-		Value:    "",
-		Path:     "/",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-	}
-
-	http.SetCookie(w, &cookie)
+	setSessionCookie("", w)
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func details(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(string)
-
 	details, err := model.GetUser(r.Context(), user)
 	if err != nil {
 		errorInternalResponse(w, err)
 		return
 	}
 	details.Password = nil
-
 	jsonResponse(w, details)
+}
+
+func setSessionCookie(sess string, w http.ResponseWriter) {
+	cookie := http.Cookie{
+		Name:     "session",
+		Value:    sess,
+		Path:     "/",
+		MaxAge:   60 * 60 * 24 * 30,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, &cookie)
 }

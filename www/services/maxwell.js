@@ -51,7 +51,7 @@ export async function* chat(thread, abort, kerror) {
             }
         }
     } catch (error) {
-        kerror(error)
+        throw error
     } finally {
         if (reader) reader.releaseLock()
     }

@@ -14,17 +14,19 @@ import (
 
 const verificationPrefix = "verification-"
 
-func SendVerificationEmail(ctx context.Context, user User) error {
-	verificationCode, err := CreateVerificationCode(ctx, user)
+func SendVerificationEmail(ctx context.Context, user User, redirect string) error {
+	code, err := CreateVerificationCode(ctx, user)
 	if err != nil {
 		return err
 	}
-
+	link := "https://www.quanta.uno/verify/" + code
+	if redirect != "" {
+		link += "?redirect=" + redirect
+	}
 	msg := fmt.Sprintf(
-		`Here's your verification code: %s. This code will expire in 30 minutes. Alternatively, you can click <a href="https://www.quanta.uno/verify/%s">here</a> to verify.`,
-		verificationCode,
-		verificationCode)
-
+		`<a href="%s">Here's</a> your verification link. This link expires in 30 minutes. If you did not request this email, please ignore it.`,
+		link,
+	)
 	return services.SendMail(user.Email, "Your Quanta Email Verification Code!", msg)
 }
 

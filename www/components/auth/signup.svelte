@@ -1,5 +1,5 @@
 <script>
-    import { inertia, router } from '@inertiajs/svelte'
+    import { inertia, page, router } from '@inertiajs/svelte'
     import auth from '$/stores/auth.svelte.js'
     import {
         emailSchema,
@@ -12,17 +12,18 @@
 
     let data = $state({})
     let message = $state('')
+    let verify = $state(false)
     let passwordConfirmSchema = $derived(matchingSchema(data['password'], 'Passwords'))
+    let redirect = $derived($page.props?.redirect || '/')
 
     async function action(data) {
-        const response = await fetch('/api/auth/signup', {
+        const response = await fetch(`/api/auth/signup?redirect=${encodeURIComponent(redirect)}`, {
             method: 'POST',
             body: JSON.stringify(data),
         })
 
         if (response.ok) {
-            router.get('/verify')
-            auth.refreshDetails()
+            verify = true
         }
 
         const message = await response.text()
@@ -30,37 +31,41 @@
     }
 </script>
 
-<Form
-    inputs={[
-        { name: 'email', label: 'Email', type: 'text', schema: emailSchema },
-        { name: 'fullName', label: 'Full name', type: 'text', schema: nameSchema },
-        { name: 'preferredName', label: 'Preferred name', type: 'text', schema: nameSchema },
-        {
-            name: 'username',
-            label: 'Username',
-            type: 'text',
-            schema: usernameSchema,
-        },
-        {
-            name: 'password',
-            label: 'Password',
-            type: 'password',
-            schema: passwordSchema,
-        },
-        {
-            name: 'confirmPassword',
-            label: 'Confirm password',
-            type: 'password',
-            schema: passwordConfirmSchema,
-        },
-    ]}
-    submitLabel="Sign up"
-    {action}
-    bind:message
-    bind:data
-/>
-<p class="text-center">
-    Have an account? Sign in
-    <a use:inertia class="anchor" href="/signin">here</a>
-</p>
-<br />
+{#if !verify}
+    <Form
+        inputs={[
+            { name: 'email', label: 'Email', type: 'text', schema: emailSchema },
+            { name: 'fullName', label: 'Full name', type: 'text', schema: nameSchema },
+            { name: 'preferredName', label: 'Preferred name', type: 'text', schema: nameSchema },
+            {
+                name: 'username',
+                label: 'Username',
+                type: 'text',
+                schema: usernameSchema,
+            },
+            {
+                name: 'password',
+                label: 'Password',
+                type: 'password',
+                schema: passwordSchema,
+            },
+            {
+                name: 'confirmPassword',
+                label: 'Confirm password',
+                type: 'password',
+                schema: passwordConfirmSchema,
+            },
+        ]}
+        submitLabel="Sign up"
+        {action}
+        bind:message
+        bind:data
+    />
+    <p class="text-center">
+        Have an account? Sign in
+        <a use:inertia class="anchor" href="/signin">here</a>
+    </p>
+    <br />
+{:else}
+    <p class="text-center">A verification link was sent to your email.</p>
+{/if}

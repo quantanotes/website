@@ -5,38 +5,32 @@ import (
 	"quanta/internal/single"
 )
 
-// Rename public to permission
-
 const (
 	linkCategory = "link"
 )
 
 func GrantPublicReadPermissionWhereAuthor(ctx context.Context, id string, author string) (int, error) {
-	public := 0
-
+	permission := 0
 	query := `
 		UPDATE knowledge
-		SET public = 1
-		WHERE public < 1 AND id = $1 AND author_id = $2
-		RETURNING public
+		SET permission = 1
+		WHERE permission < 1 AND id = $1 AND author_id = $2
+		RETURNING permission
 	`
-
-	err := single.DB.QueryRow(ctx, query, id, author).Scan(&public)
-	return public, err
+	err := single.DB.QueryRow(ctx, query, id, author).Scan(&permission)
+	return permission, err
 }
 
 func RevokePublicReadPermissionWhereAuthor(ctx context.Context, id string, author string) (int, error) {
-	public := 0
-
+	permission := 0
 	query := `
 		UPDATE knowledge
-		SET public = 0
+		SET permission = 0
 		WHERE id = $1 AND author_id = $2
-		RETURNING public
+		RETURNING permission
 	`
-
-	err := single.DB.QueryRow(ctx, query, id, author).Scan(&public)
-	return public, err
+	err := single.DB.QueryRow(ctx, query, id, author).Scan(&permission)
+	return permission, err
 }
 
 func GetLinksWhereAuthor(ctx context.Context, parent string, author string) ([]Knowledge, error) {
@@ -54,11 +48,10 @@ func DeleteLinkWhereAuthor(ctx context.Context, id string, author string) error 
 func GrantLinkPermissionWhereAuthor(ctx context.Context, id string, author string, permission int) (int, error) {
 	query := `
 		UPDATE knowledge
-		SET public = $3
-		WHERE public < 1 AND id = $1 AND author_id = $2
-		RETURNING public
+		SET permission = $3
+		WHERE permission < 1 AND id = $1 AND author_id = $2
+		RETURNING permission
 	`
-
 	err := single.DB.QueryRow(ctx, query, id, author, permission).Scan(&permission)
 	return permission, err
 }

@@ -9,16 +9,17 @@ import (
 )
 
 var (
-	AppURL          string
-	SSRURL          string
-	MaxwellURL      string
-	RedisURL        string
-	PostgresURL     string
-	EmailUsername   string
-	EmailPassword   string
-	EmailHost       string
-	EmailPort       string
-	StripeSecretKey string
+	AppURL           string
+	SSRURL           string
+	MaxwellURL       string
+	RedisURL         string
+	PostgresURL      string
+	EmailUsername    string
+	EmailPassword    string
+	EmailHost        string
+	EmailPort        string
+	StripeKey        string
+	StripeWebhookKey string
 )
 
 func init() {
@@ -32,5 +33,6 @@ func init() {
 	EmailPassword = os.Getenv("EMAIL_PASSWORD")
 	EmailHost = os.Getenv("EMAIL_HOST")
 	EmailPort = os.Getenv("EMAIL_PORT")
-	StripeSecretKey = os.Getenv("STRIPE_SECRET_KEY")
+	StripeKey = os.Getenv("STRIPE_KEY")
+	StripeWebhookKey = os.Getenv("STRIPE_WEBHOOK_KEY")
 }

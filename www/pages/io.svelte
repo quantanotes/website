@@ -4,7 +4,6 @@
 
 <script>
     import { onMount } from 'svelte'
-    import auth from '$/stores/auth.svelte.js'
     import { chat } from '$/services/maxwell.js'
     import io from '$/stores/io.svelte.js'
     import Sidebar from '$/components/common/sidebar/sidebar.svelte'
@@ -19,7 +18,6 @@
     let container = $state()
     let abort = $state()
     let generating = $state(false)
-
     let showSidebar = $state(false)
     let sidebarWidth = $state(288)
 
@@ -38,7 +36,7 @@
         await scroll()
 
         try {
-            const stream = chat(thread, abort, kerror)
+            const stream = chat(thread, abort)
             const reply = { role: 'assistant', content: '', citations: [] }
             let first = false
 
@@ -52,18 +50,19 @@
                 reply.citations = [...reply.citations, ...part.citations]
                 thread = thread
             }
+        } catch {
+            handleError(error)
         } finally {
             generating = false
         }
     }
 
-    function kerror(error) {
+    function handleError(error) {
         const content = thread.at(-1).content
         input = content
         thread = [...thread.slice(0, thread.length - 1)]
-
         if (error.status == 401) {
-            auth.show()
+            
         } else {
             console.error(error)
         }

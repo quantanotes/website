@@ -63,7 +63,7 @@ func stripeWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	event, err = webhook.ConstructEvent(body, r.Header.Get("Stripe-Signature"), globals.StripeWebhookSecret)
+	event, err = webhook.ConstructEvent(body, r.Header.Get("Stripe-Signature"), globals.StripeWebhookKey)
 	if err != nil {
 		errorBadRequestResponse(w)
 		return

@@ -11,5 +11,5 @@ var (
 )
 
 func init() {
-	Stripe.Init(globals.StripeSecretKey, nil)
+	Stripe.Init(globals.StripeKey, nil)
 }

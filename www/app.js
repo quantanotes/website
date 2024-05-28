@@ -1,9 +1,11 @@
 import { hydrate } from 'svelte'
-import { createInertiaApp } from '@westacks/inertia-svelte'
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+import { createInertiaApp } from '@inertiajs/svelte'
 
 createInertiaApp({
-    resolve: name => resolvePageComponent(`./pages/${name}.svelte`, import.meta.glob('./pages/**/*.svelte')),
+    resolve(name) {
+        const pages = import.meta.glob('./pages/**/*.svelte', { eager: true })
+        return pages[`./pages/${name}.svelte`]
+    },
     setup({ el, App, props }) {
         hydrate(App, { target: el, props })
     }

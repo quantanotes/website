@@ -64,7 +64,7 @@ func CreateUser(ctx context.Context, user User) (User, error) {
 	}
 
 	query := `
-		INTERT INTO users
+		INSERT INTO users
 		(username, full_name, preferred_name, email, password)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at

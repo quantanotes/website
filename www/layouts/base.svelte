@@ -19,7 +19,7 @@
 <ContextMenu />
 
 {#key $page.url}
-    <div transition:blur>
+    <div class="absolute inset-0 h-screen overflow-x-hidden w-screen" transition:blur={{ duration: 300 }}>
         {@render children()}
     </div>
 {/key}
