@@ -57,14 +57,14 @@ func init() {
 			// r.Post("/api/maxwell/delete", maxwellUpdate)
 			r.Post("/api/maxwell/chat", maxwellChat)
 
-			r.Post("/api/billing/checkout", checkout)
-			r.Post("/api/billing/webhook", stripeWebhook)
-
 			r.Post("/api/permissions/grant", grant)
 			r.Post("/api/permissions/links/retrieve", retrieveLinks)
 			r.Post("/api/permissions/links/create", createLink)
 			r.Post("/api/permissions/links/delete", deleteLink)
 		})
+
+		r.With(middleware.Private).Post("/api/billing/checkout", checkout)
+		r.Post("/api/billing/webhook", stripeWebhook)
 
 		r.Post("/api/auth/signin", signin)
 		r.Post("/api/auth/signup", signup)
