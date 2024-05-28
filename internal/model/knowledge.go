@@ -19,26 +19,22 @@ type Knowledge struct {
 
 func GetKnowledge(ctx context.Context, id string) (Knowledge, error) {
 	var k Knowledge
-
 	query := `
 		SELECT id, parent_id, author_id, title, convert_from(content, 'utf-8'), public,
 		FROM knowledge
 		WHERE id = $1 AND category = 'note'
 	`
-
 	err := single.DB.QueryRow(ctx, query, id).Scan(&k.Id, &k.Parent, &k.Author, &k.Title, &k.Content, &k.Public)
 	return k, err
 }
 
 func CreateKnowledge(ctx context.Context, parent string, author string, category string, title string, content string) (Knowledge, error) {
 	var k Knowledge
-
 	query := `
 		INSERT INTO knowledge (parent_id, author_id, category, title, content)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, parent_id, author_id, title, convert_from(content, 'utf-8')
 	`
-
 	err := single.DB.
 		QueryRow(ctx, query, parent, author, category, title, []byte(content)).
 		Scan(&k.Id, &k.Parent, &k.Author, &k.Title, &k.Content)
@@ -50,7 +46,6 @@ func DeleteKnowledgeWhereAuthor(ctx context.Context, id string, author string) e
 		DELETE FROM knowledge
 		WHERE id = $1 AND author_id = $2
 	`
-
 	_, err := single.DB.Exec(ctx, query, id, author)
 	return err
 }
@@ -61,7 +56,6 @@ func UpdateKnowledgeWhereAuthor(ctx context.Context, id string, author string, t
 		SET title = $3, content = convert_to($4, 'utf8')
 		WHERE id = $1 AND author_id = $2	
 	`
-
 	_, err := single.DB.Exec(ctx, query, id, author, title, content)
 	return err
 }
@@ -84,13 +78,11 @@ func CreateKnowledgeWhereParentAuthor(
 	ctx context.Context, parent string, author string, category string, title string, content string, public int,
 ) (Knowledge, error) {
 	var k Knowledge
-
 	query := `
 		INSERT INTO knowledge (parent_id, author_id, category, title, content, public)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id, parent_id, author_id, title, convert_from(content, 'utf-8'), public
 	`
-
 	err := single.DB.
 		QueryRow(ctx, query, parent, author, category, title, []byte(content), public).
 		Scan(&k.Id, &k.Parent, &k.Author, &k.Title, &k.Content, &k.Public)
@@ -151,7 +143,6 @@ func GetKnowledgeChildren(ctx context.Context, id string) ([]Knowledge, error) {
 
 func GetKnowledgeChildWhereAuthorCategory(ctx context.Context, parent string, author string, category string) (Knowledge, error) {
 	var k Knowledge
-
 	query := `
 		SELECT id, parent_id, author_id, title, convert_from(content, 'utf-8'), public
 		FROM knowledge
@@ -160,11 +151,9 @@ func GetKnowledgeChildWhereAuthorCategory(ctx context.Context, parent string, au
 			author_id = $2 AND
 			category = $3
 	`
-
 	err := single.DB.
 		QueryRow(ctx, query, parent, author, category).
 		Scan(&k.Id, &k.Parent, &k.Author, &k.Title, &k.Content, &k.Public)
-
 	return k, err
 }
 

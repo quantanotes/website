@@ -28,6 +28,7 @@ require (
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/nichady/golte v0.0.4 // indirect
 	github.com/redis/go-redis/v9 v9.5.1 // indirect
+	github.com/stripe/stripe-go/v78 v78.8.0 // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect

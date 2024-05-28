@@ -18,19 +18,20 @@ type User struct {
 	Email         string    `json:"email"`
 	Password      *string   `json:"password,omitempty"`
 	Image         *string   `json:"image,omitempty"`
+	CustomerId    *string   `json:"customerId,omitempty"`
+	Credits       int       `json:"credits"`
 }
 
 func GetUser(ctx context.Context, userId string) (User, error) {
 	var user User
-
-	query := `select id, created_at, username, full_name, preferred_name, email, password, image from users where id = $1;`
+	query := `
+		SELECT id, created_at, username, full_name, preferred_name, email, password, image
+		FROM users
+		WHERE id = $1
+	`
 	row := single.DB.QueryRow(ctx, query, userId)
 	err := row.Scan(&user.Id, &user.CreatedAt, &user.Username, &user.FullName, &user.PreferredName, &user.Email, &user.Password, &user.Image)
-	if err != nil {
-		return user, err
-	}
-
-	return user, nil
+	return user, err
 }
 
 func VerifyUserAndCreateSession(ctx context.Context, email string, password string) (string, bool, error) {
@@ -38,7 +39,6 @@ func VerifyUserAndCreateSession(ctx context.Context, email string, password stri
 	if err != nil || !verified {
 		return "", verified, err
 	}
-
 	id, err := CreateSession(ctx, userId)
 	return id, verified, err
 }
@@ -48,7 +48,6 @@ func CreateUserAndSession(ctx context.Context, user User) (User, string, error) 
 	if err != nil {
 		return User{}, "", err
 	}
-
 	id, err := CreateSession(ctx, user.Id)
 	return user, id, err
 }
@@ -64,7 +63,12 @@ func CreateUser(ctx context.Context, user User) (User, error) {
 		return User{}, err
 	}
 
-	query := `insert into users (username, full_name, preferred_name, email, password) values ($1, $2, $3, $4, $5) returning id, created_at`
+	query := `
+		INTERT INTO users
+		(username, full_name, preferred_name, email, password)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, created_at
+	`
 	row := single.DB.QueryRow(ctx, query, user.Username, user.FullName, user.PreferredName, user.Email, hash)
 	if err := row.Scan(&id, &createdAt); err != nil {
 		return User{}, err
@@ -81,7 +85,7 @@ func VerifyUser(ctx context.Context, email string, password string) (string, boo
 		hash string
 	)
 
-	query := `select id, password from users where email = $1;`
+	query := `SELECT id, password FROM users WHERE email = $1;`
 	err := single.DB.QueryRow(ctx, query, email).Scan(&id, &hash)
 	if err == pgx.ErrNoRows {
 		return "", false, nil

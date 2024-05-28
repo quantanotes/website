@@ -9,8 +9,8 @@
 
 <button
     class={`
-        bg-primary border border-secondary cursor-pointer h-4 relative transition-all w-8
-        ${active && 'shadow-secondary shadow-md'}
+        bg-primary border border-contrast hover:border-secondary cursor-pointer h-4 relative transition-all w-8
+        ${active && 'border-secondary shadow-secondary shadow-md'}
     `}
     onclick={toggle}
 >
