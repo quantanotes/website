@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+	"io"
 	"math"
 	"net/http"
 	"quanta/internal/globals"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stripe/stripe-go/v78"
+	"github.com/stripe/stripe-go/v78/webhook"
 )
 
 const (
@@ -47,6 +50,40 @@ func checkout(w http.ResponseWriter, r *http.Request) {
 	single.Inertia.Location(w, r, sess.URL)
 }
 
+func stripeWebhook(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		errorInternalResponse(w, err)
+		return
+	}
+
+	var event stripe.Event
+	if err := json.Unmarshal(body, &event); err != nil {
+		errorInternalResponse(w, err)
+		return
+	}
+
+	event, err = webhook.ConstructEvent(body, r.Header.Get("Stripe-Signature"), globals.StripeWebhookSecret)
+	if err != nil {
+		errorBadRequestResponse(w)
+		return
+	}
+
+	switch event.Type {
+	case "payment_intent.succeeded":
+		var payment stripe.PaymentIntent
+		if err := json.Unmarshal(event.Data.Raw, &payment); err != nil {
+			errorBadRequestResponse(w)
+			return
+		}
+
+		if err := handlePayment(payment); err != nil {
+			errorInternalResponse(w, err)
+			return
+		}
+	}
+}
+
 func checkoutSessionParams(customer string, redirect string, interval string, amount int64, price float64) *stripe.CheckoutSessionParams {
 	params := &stripe.CheckoutSessionParams{
 		Customer:   stripe.String(customer),
@@ -79,6 +116,17 @@ func checkoutSessionParams(customer string, redirect string, interval string, am
 	}
 
 	return params
+}
+
+func handlePayment(payment stripe.PaymentIntent) error {
+	customerId := payment.Customer.ID
+	var quantity int64
+	if payment.Invoice.Subscription != nil {
+		quantity = payment.Invoice.Subscription.Items.Data[0].Quantity
+	} else {
+		quantity = payment.Invoice.Lines.Data[0].Quantity
+	}
+	return model.AddCredits(customerId, int(quantity))
 }
 
 func calculateAmountAndPrice(period string, amount int) (int64, float64) {

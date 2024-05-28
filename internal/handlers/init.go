@@ -58,6 +58,7 @@ func init() {
 			r.Post("/api/maxwell/chat", maxwellChat)
 
 			r.Post("/api/billing/checkout", checkout)
+			r.Post("/api/billing/webhook", stripeWebhook)
 
 			r.Post("/api/permissions/grant", grant)
 			r.Post("/api/permissions/links/retrieve", retrieveLinks)
