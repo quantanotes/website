@@ -4,7 +4,6 @@
 
 <script>
     import { onMount } from 'svelte'
-    import { chat } from '$/services/maxwell.js'
     import io from '$/stores/io.svelte.js'
     import Sidebar from '$/components/common/sidebar/sidebar.svelte'
     import Input from '$/components/io/input.svelte'
@@ -36,21 +35,18 @@
         await scroll()
 
         try {
-            const stream = chat(thread, abort)
+            const stream = io.chat(thread, abort)
             const reply = { role: 'assistant', content: '', citations: [] }
-            let first = false
-
+            let first = true
             for await (const part of stream) {
                 if (first) {
-                    thread = [...thread, reply]
+                    thread.push(reply)
                     first = false
                 }
-
-                reply.content += part.content
-                reply.citations = [...reply.citations, ...part.citations]
-                thread = thread
+                thread[thread.length - 1].content += part.content
+                thread[thread.length - 1].citations.push(...part.citations)
             }
-        } catch {
+        } catch (error) {
             handleError(error)
         } finally {
             generating = false

@@ -1,6 +1,9 @@
 js:
 	bun run build
 
+js-dev-build:
+	bun run dev-build
+
 js-dev:
 	bun run dev
 

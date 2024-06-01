@@ -3,7 +3,7 @@
     import Icon from '@iconify/svelte'
     import Textarea from '$/components/atoms/textarea.svelte'
 
-    let { value, send, suggestions } = $props()
+    let { value, send, suggestions = [] } = $props()
     let focus = $state()
 
     function handleKeydown(event) {

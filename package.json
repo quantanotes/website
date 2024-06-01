@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "APP_ENV=DEV vite build --watch",
+    "dev-build": "APP_ENV=DEV vite build",
     "build": "vite build && vite build --ssr",
     "ssr": "bun run ssr/ssr.js"
   },

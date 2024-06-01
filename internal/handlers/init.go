@@ -21,11 +21,16 @@ func init() {
 		r.Use(mw.Recoverer)
 
 		r.Get("/", page("index", nil))
-		r.Get("/notes", restrictedPage("notes-public", "notes", nil))
-		r.Get("/io", restrictedPage("io-public", "io", nil))
 		r.Get("/space", page("space", nil))
 		r.Get("/space/*", page("space", nil))
-		r.Get("/heisenberg", restrictedPage("heisenberg-public", "heisenberg", nil))
+
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.Restricted)
+
+			r.Get("/notes", restrictedPage("notes-public", "notes", nil))
+			r.Get("/io", restrictedPage("io-public", "io", nil))
+			r.Get("/heisenberg", restrictedPage("heisenberg-public", "heisenberg", nil))
+		})
 
 		r.Get("/shop", page("shop", nil))
 
@@ -40,19 +45,22 @@ func init() {
 			r.Use(middleware.Private)
 
 			r.Post("/api/notes/roots", notesRoots)
+			r.Post("/api/notes/children", notesChildren)
 			r.Post("/api/notes/create", notesCreate)
 			r.Post("/api/notes/update", notesUpdate)
 			r.Post("/api/notes/delete", notesDelete)
 			r.Post("/api/notes/move", notesMove)
-			r.Post("/api/notes/children", notesChildren)
 			r.Post("/api/notes/publish", notesPublish)
 			r.Post("/api/notes/unpublish", notesUnpublish)
 
+			r.Post("/api/maxwell/chat", maxwellChat)
 			r.Post("/api/maxwell/roots", maxwellRoots)
 			r.Post("/api/maxwell/children", maxwellChildren)
-			// r.Post("/api/maxwell/create", maxwellCreate)
-			// r.Post("/api/maxwell/delete", maxwellUpdate)
-			r.Post("/api/maxwell/chat", maxwellChat)
+			r.Post("/api/maxwell/create", maxwellCreate)
+			r.Post("/api/maxwell/delete", maxwellUpdate)
+			r.Post("/api/maxwell/move", maxwellMove)
+			r.Post("/api/maxwell/publish", maxwellPublish)
+			r.Post("/api/maxwell/unpublish", maxwellUnpublish)
 
 			r.Post("/api/permissions/grant", grant)
 			r.Post("/api/permissions/links/retrieve", retrieveLinks)
