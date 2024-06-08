@@ -19,6 +19,12 @@
     }
 </script>
 
+<br />
+<br />
+<h1 class="mx-auto text-lg w-fit">Welcome back</h1>
+<br />
+<br />
+
 <Form
     inputs={[
         { name: 'email', label: 'Email', type: 'text' },

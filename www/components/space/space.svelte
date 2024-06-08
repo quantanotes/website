@@ -1,20 +1,23 @@
 <script>
     import { onMount } from 'svelte'
+    import ForceGraph from 'force-graph'
     import darkMode from '$/stores/dark-mode.svelte.js'
-
-    if (typeof window == 'undefined')
-        var ForceGraph,
-            { NodeObject } = require('force-graph')
 
     /** @type {{ data: any, onNodeClick: (node: NodeObject, event: MouseEvent) => void }} */
     let { data, onNodeClick } = $props()
 
     let ref
-    let graph = ForceGraph()
     let width = $state(0)
     let height = $state(0)
 
-    onMount(() => {
+    const graph = ForceGraph()
+
+    onMount(async () => {
+        // if (typeof window === 'undefined') return
+
+        // let ForceGraph = (await import('force-graph')).default
+        // graph = ForceGraph()
+
         graph(ref)
             .graphData(data)
             .nodeCanvasObject((node, ctx, globalScale) => {

@@ -3,12 +3,12 @@
     import Hero from '$/components/common/hero.svelte'
     import SectionDivider from '$/components/atoms/section-divider.svelte'
 
-    const headline = 'machine intelligence for human intelligence'
-    const tagline = 'we build AI to enhance productivity and mindfulness.'
+    const headline = 'Machine intelligence for human intelligence'
+    const tagline = 'We build AI to enhance productivity and mindfulness'
     const suggestions = [
-        'can you keep me accountable for me meditation habit?',
-        'build an automation for my catering business',
-        'scale and automate my email outreach campaign',
+        'Can you keep me accountable for me meditation habit?',
+        'Build an automation for my catering business',
+        'Scale and automate my email outreach campaign',
     ]
 </script>
 

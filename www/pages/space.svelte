@@ -59,7 +59,7 @@
 <Space bind:data {onNodeClick} />
 <Navbar bind:current />
 <div class="absolute pt-11 w-screen">
-    <div class="max-w-3xl mx-auto p-4">
+    <div class="h-fit max-w-3xl mx-auto p-4">
         <Input />
     </div>
 </div>

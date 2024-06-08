@@ -3,9 +3,9 @@
     import Hero from '$/components/common/hero.svelte'
     import CtaAtom from './cta-atom.svelte'
 
-    const headline = 'io saids hello'
+    const headline = '10X yourself with Io'
     const tagline =
-        'a personalised ai agent for your mind, thoughts and feelings, connected to the outside world to complete tasks'
+        'Io is an AI that completes tasks to make progress towards your goals.'
 </script>
 
 <Hero {headline} {tagline} />

@@ -1,7 +1,7 @@
 <script>
     import SectionDivider from '../atoms/section-divider.svelte'
 
-    let { title, content } = $props()
+    let { title, children} = $props()
 </script>
 
 <div class="p-4">
@@ -12,7 +12,7 @@
     <br />
     <br />
 
-    {@render content()}
+    {@render children()}
 </div>
 
 <SectionDivider />

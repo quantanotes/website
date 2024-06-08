@@ -1,35 +1,35 @@
 <script>
-    import SectionDivider from "$/components/atoms/section-divider.svelte"
+    import SectionDivider from '$/components/atoms/section-divider.svelte'
 
     const pricing = [
         {
-            name: 'basic',
+            name: 'Basic',
             price: '£5 / month',
             description:
-                'an empathetic life coach that helps you overcome your problems with internet access',
+                'An empathetic life coach that helps you overcome your problems with internet access',
         },
         {
-            name: 'standard',
+            name: 'Standard',
             price: '£20 / month',
             description:
-                'connects with your data and the outside world for powerful task solving capabilities',
+                'Connects with your data and the outside world for powerful task solving capabilities',
         },
         {
-            name: 'advanced',
+            name: 'Advanced',
             price: '£100 / month',
             description:
-                'orchestrates multiple agents that can perform tasks that require higher levels of planning',
+                'Orchestrates multiple agents that can perform tasks that require higher levels of planning',
         },
         {
-            name: 'enterprise',
-            price: 'contact us',
-            description: 'for advanced use cases to power entire organisation',
+            name: 'Enterprise',
+            price: 'Contact us',
+            description: 'For advanced use cases to power entire organisation',
         },
     ]
 </script>
 
 <div class="p-4">
-    <h1 class="flex font-bold justify-between mx-auto text-4xl text-center w-fit">pricing</h1>
+    <h1 class="flex font-bold justify-between mx-auto text-4xl text-center w-fit">Pricing</h1>
 
     <br />
     <br />

@@ -17,5 +17,5 @@
 </script>
 
 <div class="max-w-4xl mx-auto px-4">
-    <Input bind:value {suggestions} />
+    <Input bind:value placeholder={'Ask Io anything...'} {send} {suggestions} />
 </div>
