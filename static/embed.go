@@ -5,7 +5,7 @@ package static
 import "embed"
 
 var (
-	//go:embed index.html
+	//go:embed index.html images/*
 	FS embed.FS
 
 	//go:embed build/assets/*
@@ -14,4 +14,3 @@ var (
 	//go:embed build/manifest.json
 	Manifest string
 )
-

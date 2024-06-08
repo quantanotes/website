@@ -75,7 +75,7 @@
         {#each products as product, i}
             <a
                 bind:this={refs[i]}
-                class="block border border-secondary flex flex-col h-96 justify-between my-8 p-4 shrink-0 snap-always snap-center hover:shadow-lg transition-shadow w-80"
+                class="border border-secondary flex flex-col h-96 justify-between my-8 p-4 shrink-0 snap-always snap-center hover:shadow-lg transition-shadow w-80"
                 href={`/${product.name.toLowerCase()}`}
                 use:inertia
             >

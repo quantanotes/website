@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {{ if .ssr }}
-            {{ raw .ssr.Head }}
+        {{ raw .ssr.Head }}
         {{ end }}
-        <link href="{{ asset "www/app.css" }}" rel="stylesheet"></link>
+        <link href="{{ asset "www/app.css" }}" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="/static/images/favicon.png">
         <script type="module" src="{{ asset "www/app.js" }}" defer="true"></script>
     </head>
     <body>
         {{ if not .ssr }}
-            <div id="app" data-page="{{ marshal .page }}"></div>
+        <div id="app" data-page="{{ marshal .page }}"></div>
         {{ else }}
-            {{ raw .ssr.Body }}
+        {{ raw .ssr.Body }}
         {{ end }}
     </body>
 </html>
