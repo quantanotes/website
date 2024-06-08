@@ -6,11 +6,12 @@ export default {
     },
 
     get modal() {
-        return modal 
+        return modal
     },
 
     async signout() {
         await fetch('/api/auth/signout', { method: 'POST' })
+        user = undefined
     },
 
     async refreshDetails() {

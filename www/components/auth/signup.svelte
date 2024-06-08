@@ -11,17 +11,18 @@
 
     let data = $state({})
     let message = $state('')
+    let verify = $state(false)
     let passwordConfirmSchema = $derived(matchingSchema(data['password'], 'Passwords'))
+    let redirect = $derived($page.props?.redirect || '/')
 
     async function action(data) {
-        const response = await fetch('/api/auth/signup', {
+        const response = await fetch(`/api/auth/signup?redirect=${encodeURIComponent(redirect)}`, {
             method: 'POST',
             body: JSON.stringify(data),
         })
 
         if (response.ok) {
-            router.get('/verify')
-            auth.refreshDetails()
+            verify = true
         }
 
         const message = await response.text()

@@ -6,8 +6,8 @@
     let { id, parent, share, settings } = $props()
 
     const actions = [
-        // { name: 'New', action: async () => await maxwell.create(id) },
-        // { name: 'Delete', action: async () => await maxwell.remove(id, parent) },
+        { name: 'New', action: async () => await io.create(id) },
+        { name: 'Delete', action: async () => await io.remove(id, parent) },
         {
             name: 'Share',
             action: (event) => contextMenu.show(event.target, share, 'bottom', '', event),

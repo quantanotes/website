@@ -1,7 +1,9 @@
 <script>
-    import { inertia, router } from '@inertiajs/svelte'
+    import { inertia, page, router } from '@inertiajs/svelte'
     import auth from '$/stores/auth.svelte.js'
     import Form from '$/components/atoms/form.svelte'
+
+    let redirect = $derived($page.props?.redirect || '/')
 
     async function action(data) {
         const response = await fetch('/api/auth/signin', {
@@ -10,7 +12,7 @@
         })
 
         if (response.ok) {
-            router.get('/')
+            router.get(redirect)
             auth.refreshDetails()
         }
 

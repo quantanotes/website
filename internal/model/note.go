@@ -11,8 +11,8 @@ const (
 	noteRootTitle = "root"
 )
 
-func CreateNote(ctx context.Context, owner string, author string) (Knowledge, error) {
-	return CreateKnowledge(ctx, owner, author, noteCategory, "", "")
+func CreateNote(ctx context.Context, parent string, author string) (Knowledge, error) {
+	return CreateKnowledge(ctx, parent, author, noteCategory, "", "")
 }
 
 func UpdateNote(ctx context.Context, id string, author string, title string, content string) error {
@@ -35,8 +35,8 @@ func GetOrCreateRootNote(ctx context.Context, author string) (Knowledge, error) 
 	return note, err
 }
 
-func GetNoteChildren(ctx context.Context, owner string, author string) ([]Knowledge, error) {
-	return GetKnowledgeChildrenWhereAuthorCategory(ctx, owner, author, noteCategory)
+func GetNoteChildren(ctx context.Context, parent string, author string) ([]Knowledge, error) {
+	return GetKnowledgeChildrenWhereAuthorCategory(ctx, parent, author, noteCategory)
 }
 
 func PublishNote(ctx context.Context, id string, author string) (int, error) {

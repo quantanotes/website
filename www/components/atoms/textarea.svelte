@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte'
+    import { scale } from 'svelte/transition'
 
     export let value = ''
     export let placeholder = ''

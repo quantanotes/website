@@ -3,22 +3,22 @@
     import Icon from '@iconify/svelte'
     import Dropdown from '$/components/atoms/dropdown.svelte'
 
-    let { id, state, contextMenu } = $props()
+    let { id, state: _state, contextMenu } = $props()
     let expanded = $state(false)
-    let children = $derived(state.map[id]?.children.toSorted(sorter) || [])
+    let children = $derived(_state.map[id]?.children.toSorted(sorter) || [])
     // Counts nested drag enters
     let dragRC = $state(0)
     // Checks if we need to expand due to drag and drop
-    let dragExpanded = $derived(dragRC > 0 && !(state.moving === id || state.ascendants(id).includes(state.moving)))
+    let dragExpanded = $derived(dragRC > 0 && !(_state.moving === id || _state.ascendants(id).includes(_state.moving)))
 
     async function expand() {
-        if (!expanded) await state.children(id)
+        if (!expanded) await _state.children(id)
         expanded = !expanded
     }
 
     function handleDragStart(event) {
         event.stopPropagation()
-        state.moving = id
+        _state.moving = id
         event.dataTransfer.setData('text/plain', id)
     }
 
@@ -26,8 +26,8 @@
         event.preventDefault()
         dragRC++
         if (!expanded && dragExpanded && dragRC == 1) {
-            state.dragover = id
-            await state.children(id)
+            _state.dragover = id
+            await _state.children(id)
         }
     }
 
@@ -43,28 +43,28 @@
     async function handleDrop(event) {
         event.preventDefault()
         // Copy so we can reset (avoiding a long if statement below)
-        const moving = state.moving
-        const dragover = state.dragover
-        state.moving = ''
-        state.dragover = ''
+        const moving = _state.moving
+        const dragover = _state.dragover
+        _state.moving = ''
+        _state.dragover = ''
         dragRC = 0
         if (!moving || !dragover) return
         // If a parent is being dropped in to a child
-        if (state.ascendants(id).includes(moving)) return
+        if (_state.ascendants(id).includes(moving)) return
         // If it's dropping in to the same parent
-        if (dragover === state.map[moving].parent) return
+        if (dragover === _state.map[moving].parent) return
         // Make sure the UI is expanded so we can see where we dropped
         expanded = true
         if (dragover === moving) return
-        await state.move(moving, id)
+        await _state.move(moving, id)
     }
 
     function sorter(a, b) {
-        return state.map[a]?.title.localeCompare(state.map[b]?.title || '') || false
+        return _state.map[a]?.title.localeCompare(_state.map[b]?.title || '') || false
     }
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     ondragstart={handleDragStart}
     ondragenter={handleDragEnter}
@@ -82,19 +82,17 @@
             {/if}
         </button>
 
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <button
-            class={`hover:font-bold transition text-left truncate w-full ${(id == state.current || dragRC > 0) && 'font-bold'}`}
-            onclick={() => state.open(id)}
+            class={`hover:font-bold transition text-left truncate w-full ${(id == _state.current || dragRC > 0) && 'font-bold'}`}
+            onclick={() => _state.open(id)}
         >
-            {state.map[id]?.title}
+            {_state.map[id]?.title}
         </button>
 
         <Dropdown class="h-[24px] icon-btn">
             <Icon icon="mdi:dots-horizontal" />
             {#snippet menu()}
-                {@render contextMenu(id, state.map[id].parent)}
+                {@render contextMenu(id, _state.map[id].parent)}
             {/snippet}
         </Dropdown>
     </div>
@@ -105,7 +103,7 @@
             transition:fade={{ duration: 100 }}
         >
             {#each children as id}
-                <svelte:self id={id} {state} {contextMenu} />
+                <svelte:self id={id} state={_state} {contextMenu} />
             {/each}
         </div>
     {/if}

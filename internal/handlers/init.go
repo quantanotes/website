@@ -21,20 +21,22 @@ func init() {
 		r.Use(mw.Recoverer)
 
 		r.Get("/", page("index", nil))
-		r.Get("/notes", restrictedPage("notes-public", "notes", nil))
-		r.Get("/io", restrictedPage("io-public", "io", nil))
 		r.Get("/space", page("space", nil))
 		r.Get("/space/*", page("space", nil))
-		r.Get("/heisenberg", restrictedPage("heisenberg-public", "heisenberg", nil))
 
-		r.Get("/subscribe", page("subscribe", nil))
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.Restricted)
 
-		r.Get("/signin", page("signin", nil))
-		r.Get("/signup", page("signup", nil))
-		r.Get("/verify", page("verify", nil))
-		r.Get("/signin/*", page("signin", getQuery("redirect")))
-		r.Get("/signup/*", page("signup", getQuery("redirect")))
-		r.Get("/verify/*", page("verify", getQuery("redirect")))
+			r.Get("/notes", restrictedPage("notes-public", "notes", nil))
+			r.Get("/io", restrictedPage("io-public", "io", nil))
+			r.Get("/heisenberg", restrictedPage("heisenberg-public", "heisenberg", nil))
+		})
+
+		r.Get("/shop", page("shop", nil))
+
+		r.Get("/signin", page("signin", getQuery("redirect")))
+		r.Get("/signup", page("signup", getQuery("redirect")))
+		r.Get("/verify/{code}", verify)
 
 		r.Post("/api/space/algorithm", spaceAlgorithm)
 		r.Post("/api/space/children", spaceChildren)
@@ -43,25 +45,31 @@ func init() {
 			r.Use(middleware.Private)
 
 			r.Post("/api/notes/roots", notesRoots)
+			r.Post("/api/notes/children", notesChildren)
 			r.Post("/api/notes/create", notesCreate)
 			r.Post("/api/notes/update", notesUpdate)
 			r.Post("/api/notes/delete", notesDelete)
 			r.Post("/api/notes/move", notesMove)
-			r.Post("/api/notes/children", notesChildren)
 			r.Post("/api/notes/publish", notesPublish)
 			r.Post("/api/notes/unpublish", notesUnpublish)
 
+			r.Post("/api/maxwell/chat", maxwellChat)
 			r.Post("/api/maxwell/roots", maxwellRoots)
 			r.Post("/api/maxwell/children", maxwellChildren)
-			// r.Post("/api/maxwell/create", maxwellCreate)
-			// r.Post("/api/maxwell/delete", maxwellUpdate)
-			r.Post("/api/maxwell/chat", maxwellChat)
+			r.Post("/api/maxwell/create", maxwellCreate)
+			r.Post("/api/maxwell/delete", maxwellUpdate)
+			r.Post("/api/maxwell/move", maxwellMove)
+			r.Post("/api/maxwell/publish", maxwellPublish)
+			r.Post("/api/maxwell/unpublish", maxwellUnpublish)
 
 			r.Post("/api/permissions/grant", grant)
 			r.Post("/api/permissions/links/retrieve", retrieveLinks)
 			r.Post("/api/permissions/links/create", createLink)
 			r.Post("/api/permissions/links/delete", deleteLink)
 		})
+
+		r.With(middleware.Private).Post("/api/billing/checkout", checkout)
+		r.Post("/api/billing/webhook", stripeWebhook)
 
 		r.Post("/api/auth/signin", signin)
 		r.Post("/api/auth/signup", signup)

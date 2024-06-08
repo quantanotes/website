@@ -43,7 +43,7 @@ func getSessionAndUserVerbose(w http.ResponseWriter, r *http.Request) (string, s
 		return "", "", err
 	}
 
-	user, ok, err := model.GetSession(r.Context(), sess.Value)
+	userId, ok, err := model.GetSession(r.Context(), sess.Value)
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, globals.MsgError, http.StatusInternalServerError)
@@ -53,7 +53,7 @@ func getSessionAndUserVerbose(w http.ResponseWriter, r *http.Request) (string, s
 		return "", "", errors.New("session not found")
 	}
 
-	return sess.Value, user, nil
+	return sess.Value, userId, nil
 }
 
 func getSessionAndUser(w http.ResponseWriter, r *http.Request) (string, string, error) {
