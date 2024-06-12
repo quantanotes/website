@@ -1,10 +1,11 @@
 import { render } from 'svelte/server'
 import createServer from '@westacks/inertia-svelte/server'
 import { createInertiaApp } from '@westacks/inertia-svelte'
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+const pages = import.meta.glob('./pages/**/*.svelte', { eager: true })
 
 createServer((page) => createInertiaApp({
     page,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.svelte`, import.meta.glob('./pages/**/*.svelte')),
+    resolve: (name) => pages[`./pages/${name}.svelte`],
     setup: ({ App, props }) => render(App, { props })
 }))

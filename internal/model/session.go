@@ -2,7 +2,7 @@ package model
 
 import (
 	"context"
-	"quanta/internal/single"
+	"quanta/internal/services"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,15 +13,19 @@ const sessionPrefix = "session-"
 
 func CreateSession(ctx context.Context, user string) (string, error) {
 	id := uuid.New().String()
-	return id, SetSession(ctx, id, user)
+	err := SetSession(ctx, id, user)
+	return id, err
 }
 
 func SetSession(ctx context.Context, id string, user string) error {
-	return single.Cache.Set(ctx, sessionPrefix+id, user, time.Hour*24*30).Err()
+	key := sessionPrefix + id
+	expires := time.Hour * 24 * 30
+	return services.Cache.Set(ctx, key, user, expires).Err()
 }
 
 func GetSession(ctx context.Context, id string) (string, bool, error) {
-	user, err := single.Cache.Get(ctx, sessionPrefix+id).Result()
+	key := sessionPrefix + id
+	user, err := services.Cache.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return "", false, nil
 	} else if err != nil {
@@ -31,5 +35,6 @@ func GetSession(ctx context.Context, id string) (string, bool, error) {
 }
 
 func DeleteSession(ctx context.Context, id string) error {
-	return single.Cache.Del(ctx, sessionPrefix+id).Err()
+	key := sessionPrefix + id
+	return services.Cache.Del(ctx, key).Err()
 }

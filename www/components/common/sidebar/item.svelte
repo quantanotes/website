@@ -5,14 +5,16 @@
 
     let { id, state: _state, contextMenu } = $props()
     let expanded = $state(false)
-    let children = $derived(_state.map[id]?.children.toSorted(sorter) || [])
+    let children = $derived(
+        _state.map[id]?.children.toSorted(sorter).filter(_filter) || []
+    )
     // Counts nested drag enters
-    let dragRC = $state(0)
+    let dragEnterCount = $state(0)
     // Checks if we need to expand due to drag and drop
-    let dragExpanded = $derived(dragRC > 0 && !(_state.moving === id || _state.ascendants(id).includes(_state.moving)))
+    let dragExpanded = $derived(dragEnterCount > 0 && !(_state.moving === id || _state.ascendants(id).includes(_state.moving)))
 
-    async function expand() {
-        if (!expanded) await _state.children(id)
+    function expand() {
+        if (!expanded) _state.children(id)
         expanded = !expanded
     }
 
@@ -22,18 +24,18 @@
         event.dataTransfer.setData('text/plain', id)
     }
 
-    async function handleDragEnter(event) {
+    function handleDragEnter(event) {
         event.preventDefault()
-        dragRC++
-        if (!expanded && dragExpanded && dragRC == 1) {
+        dragEnterCount++
+        if (!expanded && dragExpanded && dragEnterCount == 1) {
             _state.dragover = id
-            await _state.children(id)
+            _state.children(id)
         }
     }
 
     function handleDragLeave(event) {
         event.preventDefault()
-        dragRC--
+        dragEnterCount--
     }
 
     function handleDragOver(event) {
@@ -47,7 +49,7 @@
         const dragover = _state.dragover
         _state.moving = ''
         _state.dragover = ''
-        dragRC = 0
+        dragEnterCount = 0
         if (!moving || !dragover) return
         // If a parent is being dropped in to a child
         if (_state.ascendants(id).includes(moving)) return
@@ -61,6 +63,11 @@
 
     function sorter(a, b) {
         return _state.map[a]?.title.localeCompare(_state.map[b]?.title || '') || false
+    }
+
+    // We need to filter the child nodes for certain node categories as they are not to be displayed
+    function _filter(node) {
+        return !['message', 'link'].includes(_state.map[node].category)
     }
 </script>
 
@@ -83,7 +90,7 @@
         </button>
 
         <button
-            class={`hover:font-bold transition text-left truncate w-full ${(id == _state.current || dragRC > 0) && 'font-bold'}`}
+            class={`hover:font-bold transition text-left truncate w-full ${(id == _state.current || dragEnterCount > 0) && 'font-bold'}`}
             onclick={() => _state.open(id)}
         >
             {_state.map[id]?.title}

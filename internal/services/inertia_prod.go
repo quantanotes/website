@@ -1,11 +1,11 @@
 //go:build !dev
 
-package single
+package services
 
 import (
 	"encoding/json"
 	"html/template"
-	"quanta/internal/globals"
+	"os"
 	"quanta/static"
 
 	"github.com/petaki/inertia-go"
@@ -17,10 +17,11 @@ var (
 )
 
 func init() {
-	if globals.SSRURL == "" {
+	ssrURL := os.Getenv("SSR_URL")
+	if ssrURL == "" {
 		Inertia.EnableSsrWithDefault()
 	} else {
-		Inertia.EnableSsr(globals.SSRURL)
+		Inertia.EnableSsr(ssrURL)
 	}
 	Inertia.ShareFunc("asset", asset)
 	if err := loadManifest(); err != nil {

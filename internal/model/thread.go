@@ -2,47 +2,43 @@ package model
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5"
+	"encoding/json"
+	"quanta/internal/utils"
 )
 
-const (
-	threadCategory  = "thread"
-	threadRootTitle = "root"
-)
+// TODO: Whole thread model needs reworking
 
-func CreateThread(ctx context.Context, parent string, author string) (Knowledge, error) {
-	return CreateKnowledge(ctx, parent, author, threadCategory, "", "")
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	// TODO: this needs to be an edge
+	Citations []string `json:"citations"`
 }
 
-func UpdateThread(ctx context.Context, id string, author string, title string, content string) error {
-	return UpdateKnowledgeWhereAuthor(ctx, id, author, title, content)
+type Thread []Message
+
+func AppendMessage(ctx context.Context, threadID string, userID string, msg Message) error {
+	_, err := CreateNodeWhereAuthor(ctx, msg.toNode(threadID, userID))
+	return err
 }
 
-func DeleteThread(ctx context.Context, id string, author string) error {
-	return DeleteKnowledgeWhereAuthor(ctx, id, author)
+func UpdateMessage(ctx context.Context, id string, threadID string, userID string, msg Message) error {
+	return UpdateNodeWhereAuthor(ctx, msg.toNode(threadID, userID))
 }
 
-func MoveThread(ctx context.Context, id string, author string, to string) error {
-	return MoveKnowledgeWhereAuthor(ctx, id, author, to)
+func DeleteMessage(ctx context.Context, id string, userID string) error {
+	return DeleteNodeWhereAuthor(ctx, id, userID)
 }
 
-func GetOrCreateRootThread(ctx context.Context, author string) (Knowledge, error) {
-	thread, err := GetKnowledgeChildWhereAuthorCategory(ctx, author, author, threadCategory)
-	if err == pgx.ErrNoRows {
-		thread, err = CreateKnowledge(ctx, author, author, threadCategory, threadRootTitle, "")
+func (m *Message) toNode(thread string, user string) Node {
+	contentBytes, _ := json.Marshal(m)
+	content := string(contentBytes)
+	return Node{
+		Parent:   thread,
+		Author:   user,
+		Category: "message",
+		Title:    utils.EmptyString(),
+		Content:  &content,
+		Location: utils.EmptyString(),
 	}
-	return thread, err
-}
-
-func GetThreadChildren(ctx context.Context, parent string, author string) ([]Knowledge, error) {
-	return GetKnowledgeChildrenWhereAuthor(ctx, parent, author)
-}
-
-func PublishThread(ctx context.Context, id string, author string) (int, error) {
-	return GrantPublicReadPermissionWhereAuthor(ctx, id, author)
-}
-
-func UnpublishThread(ctx context.Context, id string, author string) (int, error) {
-	return RevokePublicReadPermissionWhereAuthor(ctx, id, author)
 }

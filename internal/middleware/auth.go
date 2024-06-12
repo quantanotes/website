@@ -2,8 +2,6 @@ package middleware
 
 import (
 	"context"
-	"errors"
-	"log/slog"
 	"net/http"
 	"quanta/internal/globals"
 	"quanta/internal/model"
@@ -11,72 +9,49 @@ import (
 
 func Private(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess, user, err := getSessionAndUserVerbose(w, r)
+		sess, user, err := getSessionAndUser(r)
 		if err != nil {
-			return
+			writeError(w, err)
+		} else {
+			ctx := storeSessionAndUser(r, sess, user)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		}
-		ctx := storeSessionAndUser(r, sess, user)
-		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func Restricted(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess, user, err := getSessionAndUser(w, r)
-		if err == nil {
+		sess, user, err := getSessionAndUser(r)
+		if err != nil {
+			next.ServeHTTP(w, r)
+		} else {
 			ctx := storeSessionAndUser(r, sess, user)
 			next.ServeHTTP(w, r.WithContext(ctx))
-		} else {
-			next.ServeHTTP(w, r)
 		}
 	})
 }
 
-func getSessionAndUserVerbose(w http.ResponseWriter, r *http.Request) (string, string, error) {
+func getSessionAndUser(r *http.Request) (string, string, error) {
 	sess, err := r.Cookie("session")
 	if err == http.ErrNoCookie {
-		http.Error(w, globals.MsgUnauthorised, http.StatusUnauthorized)
-		return "", "", err
-	} else if err != nil {
-		slog.Error(err.Error())
-		http.Error(w, globals.MsgError, http.StatusInternalServerError)
-		return "", "", err
-	}
-
-	userId, ok, err := model.GetSession(r.Context(), sess.Value)
-	if err != nil {
-		slog.Error(err.Error())
-		http.Error(w, globals.MsgError, http.StatusInternalServerError)
-		return "", "", err
-	} else if !ok {
-		http.Error(w, globals.MsgUnauthorised, http.StatusUnauthorized)
-		return "", "", errors.New("session not found")
-	}
-
-	return sess.Value, userId, nil
-}
-
-func getSessionAndUser(w http.ResponseWriter, r *http.Request) (string, string, error) {
-	sess, err := r.Cookie("session")
-	if err == http.ErrNoCookie {
-		return "", "", err
+		return "", "", globals.ErrUnauthorised("Session expired or not found. Please log in again to continue.")
 	} else if err != nil {
 		return "", "", err
 	}
 
-	user, ok, err := model.GetSession(r.Context(), sess.Value)
+	userID, ok, err := model.GetSession(r.Context(), sess.Value)
 	if err != nil {
 		return "", "", err
 	} else if !ok {
-		return "", "", errors.New("session not found")
+		return "", "", globals.ErrUnauthorised("Session expired or not found. Please log in again to continue.")
 	}
 
-	return sess.Value, user, nil
+	return sess.Value, userID, nil
 }
 
-func storeSessionAndUser(r *http.Request, sess, user string) context.Context {
-	ctx := context.WithValue(r.Context(), "user", user)
-	ctx = context.WithValue(ctx, "session", sess)
-	ctx = context.WithValue(ctx, "authorised", true)
+func storeSessionAndUser(r *http.Request, sess, userID string) context.Context {
+	ctx := context.WithValue(r.Context(), globals.UserContextKey, userID)
+	ctx = context.WithValue(ctx, globals.SessionContextKey, sess)
+	ctx = context.WithValue(ctx, globals.AuthorisedContextKey, true)
 	return ctx
 }

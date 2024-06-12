@@ -9,6 +9,8 @@
     let animation = disableTransitions ? fade : undefined
 
     function parse(content, citations) {
+        if (!content) return ''
+
         if (!citations || citations.length === 0) return marked.parse(content)
 
         const cited = content.replace(

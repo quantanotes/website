@@ -58,7 +58,7 @@
             {#each active.children as link}
                 <a
                     class="block hover:font-bold max-w-4xl mx-auto transition uppercase"
-                    href={link.href || '#'}
+                    href={link.href}
                     use:inertia
                 >
                     {link.name}

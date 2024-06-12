@@ -1,3 +1,3 @@
-import createCRUD from './crud.svelte'
+import createNodeStore from './nodes.svelte'
 
-export default createCRUD('notes')
+export default createNodeStore('note')

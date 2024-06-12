@@ -1,4 +1,4 @@
-package single
+package services
 
 import (
 	"context"
@@ -11,7 +11,9 @@ var DB *pgxpool.Pool
 
 func init() {
 	var err error
-	if DB, err = pgxpool.New(context.Background(), globals.PostgresURL); err != nil {
+	ctx := context.Background()
+	url := globals.Env("POSTGRES_URL")
+	if DB, err = pgxpool.New(ctx, url); err != nil {
 		panic(err)
 	}
 }

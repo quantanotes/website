@@ -1,3 +1,5 @@
+import { router } from '@inertiajs/svelte'
+
 let user = $state(undefined)
 
 export default {
@@ -10,13 +12,18 @@ export default {
     },
 
     async signout() {
-        await fetch('/api/auth/signout', { method: 'POST' })
+        router.post('/api/auth/signout')
         user = undefined
     },
 
     async refreshDetails() {
-        const response = await fetch('/api/auth/details', { method: 'POST' })
-        const details = await response.json()
-        user = details || undefined
+        try {
+            const response = await fetch('/api/auth/details', { method: 'POST' })
+            if (!response.ok) {
+                user = undefined
+            } else {
+                user = await response.json()
+            }
+        } catch { }
     },
 }

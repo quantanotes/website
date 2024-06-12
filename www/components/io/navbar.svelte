@@ -14,7 +14,7 @@
 			<button class="icon-btn" onclick={toggleSidebar}>
 				<Icon icon="mdi:menu" />
 			</button>
-			<div class="font-mono h-6 text-contrast">
+			<div class="h-6 text-contrast">
 				{current && current.title}
 			</div>
 		{/snippet}

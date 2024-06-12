@@ -5,17 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"quanta/internal/services"
-	"quanta/internal/single"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 )
 
-const verificationPrefix = "verification-"
+//TODO: decouple verification id and verification code
 
-func SendVerificationEmail(ctx context.Context, user User, redirect string) error {
-	code, err := CreateVerificationCode(ctx, user)
+const emailVerificationPrefix = "email-verification-"
+
+func SendEmailVerification(ctx context.Context, user User, redirect string) error {
+	code, err := CreateEmailVerificationCode(ctx, user)
 	if err != nil {
 		return err
 	}
@@ -30,27 +31,24 @@ func SendVerificationEmail(ctx context.Context, user User, redirect string) erro
 	return services.SendMail(user.Email, "Your Quanta Email Verification Code!", msg)
 }
 
-func GetVerificationUser(ctx context.Context, id string) (User, bool, error) {
+func GetUserEmailVerificationCode(ctx context.Context, id string) (User, bool, error) {
 	var user User
-
-	res, err := single.Cache.Get(ctx, verificationPrefix+id).Result()
+	res, err := services.Cache.Get(ctx, emailVerificationPrefix+id).Result()
 	if err == redis.Nil {
 		return user, false, nil
 	} else if err != nil {
 		return user, true, err
 	}
-
 	err = json.Unmarshal([]byte(res), &user)
 	return user, true, err
 }
 
-func CreateVerificationCode(ctx context.Context, user User) (string, error) {
+func CreateEmailVerificationCode(ctx context.Context, user User) (string, error) {
 	data, err := json.Marshal(user)
 	if err != nil {
 		return "", err
 	}
-
 	id := uuid.New().String()
-	err = single.Cache.Set(ctx, verificationPrefix+id, data, time.Minute*30).Err()
+	err = services.Cache.Set(ctx, emailVerificationPrefix+id, data, time.Minute*30).Err()
 	return id, err
 }

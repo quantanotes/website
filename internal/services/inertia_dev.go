@@ -1,6 +1,6 @@
 //go:build dev
 
-package single
+package services
 
 import (
 	"encoding/json"
