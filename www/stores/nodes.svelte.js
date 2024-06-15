@@ -125,13 +125,13 @@ export default function createNodeStore(category) {
         async publish(id) {
             const response = await call('publish', { id })
             if (!response.ok) return
-            map[id].public = await response.json()
+            map[id].public = 1
         },
 
         async unpublish(id) {
             const response = await call('unpublish', { id })
             if (!response.ok) return
-            map[id].public = await response.json()
+            map[id].public = 0
         },
 
         ascendants(id, result = []) {

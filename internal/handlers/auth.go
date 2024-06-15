@@ -15,7 +15,7 @@ type signinRequest struct {
 	Password string
 }
 
-var signin = jsonRequestWithWriter(func(ctx context.Context, w http.ResponseWriter, req signinRequest) error {
+var signin = jsonRequestWithWriterHandler(func(ctx context.Context, w http.ResponseWriter, req signinRequest) error {
 	if req.Email == "" || req.Password == "" {
 		return globals.ErrBadRequest("Email and password are required. Please check your input and try again.")
 	}
@@ -52,7 +52,7 @@ func (r *signupRequest) toUser() model.User {
 	}
 }
 
-var signup = jsonRequest(func(ctx context.Context, req signupRequest) error {
+var signup = jsonRequestHandler(func(ctx context.Context, req signupRequest) error {
 	if err := globals.Validator.Struct(req); err != nil {
 		return globals.ErrBadRequest("")
 	}
@@ -100,7 +100,7 @@ func signout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-var details = protectedJSONResponse(func(ctx context.Context, userID string) (model.User, error) {
+var details = protectedJSONResponseHandler(func(ctx context.Context, userID string) (model.User, error) {
 	user, err := model.GetUser(ctx, userID)
 	user.Password = nil
 	user.CustomerID = nil

@@ -29,6 +29,8 @@ func init() {
 		r.Get("/space", page("space", nil))
 		r.Get("/space/*", page("space", nil))
 
+		r.Get("/subscribe", page("subscribe", nil))
+
 		r.Get("/signin", page("signin", getQuery("redirect")))
 		r.Get("/signup", page("signup", getQuery("redirect")))
 		// TODO: render a page in case of error
@@ -40,8 +42,13 @@ func init() {
 		r.Post("/api/node/update", nodeUpdate)
 		r.Post("/api/node/delete", nodeDelete)
 		r.Post("/api/node/move", nodeMove)
+		r.Post("/api/node/publish", nodePublish)
+		r.Post("/api/node/unpublish", nodeUnpublish)
 
 		r.With(middleware.Private).Post("/api/io/chat", ioChat)
+
+		r.Post("/api/space/roots", spaceRoots)
+		r.Post("/api/space/children", spaceChildren)
 
 		r.With(middleware.Private).Post("/api/auth/signout", signout)
 		r.Post("/api/auth/signin", signin)

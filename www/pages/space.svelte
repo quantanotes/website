@@ -4,7 +4,7 @@
 
 <script>
     import { onMount } from 'svelte'
-    // import Space from '$/components/space/space.svelte'
+    import Space from '$/components/space/space.svelte'
     import Thread from '$/components/space/thread.svelte'
     import Input from '$/components/space/input.svelte'
     import Navbar from '$/components/space/navbar.svelte'
@@ -16,15 +16,15 @@
         const response = await fetch('/api/space/children', {
             method: 'POST',
             body: JSON.stringify({
-                id,
+                parent: id,
             }),
         })
         const nodes = (await response.json()) || []
         await addNodes(nodes)
     }
 
-    async function algorithm() {
-        const response = await fetch('/api/space/algorithm', {
+    async function roots() {
+        const response = await fetch('/api/space/roots', {
             method: 'POST',
         })
         const nodes = (await response.json()) || []
@@ -48,7 +48,7 @@
     }
 
     onMount(() => {
-        algorithm()
+        roots()
     })
 
     function onNodeClick(node) {
@@ -56,7 +56,7 @@
     }
 </script>
 
-<!-- <Space bind:data {onNodeClick} /> -->
+<Space bind:data {onNodeClick} />
 <Navbar bind:current />
 <div class="absolute pt-11 w-screen">
     <div class="h-fit max-w-3xl mx-auto p-4">

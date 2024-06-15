@@ -1,6 +1,8 @@
-<script>
-    import SectionDivider from '$/components/atoms/section-divider.svelte'
+<script context="module">
+    export { default as layout } from '$/layouts/page.svelte'
+</script>
 
+<script>
     const prices = [
         {
             name: 'Basic',
@@ -28,32 +30,10 @@
     ]
 </script>
 
-<div class="p-4">
-    <h1 class="flex font-bold justify-between mx-auto text-4xl text-center w-fit">Pricing</h1>
-
-    <br />
-    <br />
-    <br />
-    <br />
-
-    <div class="flex flex-col gap-8 max-w-7xl mx-auto">
-        {#each prices as price}
-            <div>
-                <div class="gap-4 grid grid-cols-3">
-                    <h3 class="font-bold text-xl">{price.name}</h3>
-                    <div>
-                        {price.price}
-                    </div>
-                    <div class="max-w-sm">
-                        {price.description}
-                    </div>
-                </div>
-                <br />
-                <br />
-                <hr class="border-contrast" />
-            </div>
-        {/each}
-    </div>
+<div class="flex flex-row gap-4 items-center justify-center max-w-6xl mx-auto h-[calc(100vh-44px)]">
+    {#each prices as price}
+        <button class="btn flex flex-col h-64 justify-between text-left w-64">
+            <div>{price.name}</div>
+        </button>
+    {/each}
 </div>
-
-<SectionDivider />

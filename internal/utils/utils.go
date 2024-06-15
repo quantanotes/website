@@ -6,5 +6,7 @@ func EmptyString() *string {
 }
 
 func ReplaceNilWithEmptyString(s **string) {
-	*s = EmptyString()
+	if *s == nil {
+		*s = EmptyString()
+	}
 }

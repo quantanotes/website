@@ -17,7 +17,7 @@ type ioChatRequest struct {
 	ThreadID string `json:"threadID"`
 }
 
-var ioChat = protectedJSONRequestWithWriter(func(ctx context.Context, w http.ResponseWriter, userID string, req ioChatRequest) error {
+var ioChat = protectedJSONRequestWithWriterHandler(func(ctx context.Context, w http.ResponseWriter, userID string, req ioChatRequest) error {
 	ioRes, err := callIo(req)
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func writeIoChat(w io.Writer, body io.ReadCloser) (model.Message, error) {
 		}
 
 		msg.Content += part.Content
-		msg.Role = part.Role
+		msg.Role = "assistant" // Temporary until I can figure out where role is being set to system incorrectly
 		msg.Citations = append(msg.Citations, part.Citations...)
 
 		flusher.Flush()

@@ -16,7 +16,7 @@
                 <button class="icon-btn" onclick={back}>
                     <Icon icon="mdi:arrow-left" />
                 </button>
-                <div class="font-mono h-6 text-contrast">
+                <div class="h-6 text-contrast">
                     {current[0].title}
                 </div>
             {/if}

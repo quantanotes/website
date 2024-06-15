@@ -47,7 +47,7 @@ func writeError(w http.ResponseWriter, err error) {
 
 type jsonRequestFunc[Req any] func(context.Context, Req) error
 
-func jsonRequest[Req any](h jsonRequestFunc[Req]) http.HandlerFunc {
+func jsonRequestHandler[Req any](h jsonRequestFunc[Req]) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req Req
 		if err := readJSON(w, r, &req); err != nil {
@@ -61,9 +61,38 @@ func jsonRequest[Req any](h jsonRequestFunc[Req]) http.HandlerFunc {
 	}
 }
 
+type jsonResponseFunc[Res any] func(context.Context) (Res, error)
+
+func jsonResponseHandler[Res any](h jsonResponseFunc[Res]) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		res, err := h(r.Context())
+		if err != nil {
+			writeError(w, err)
+		}
+		writeJSON(w, res)
+	}
+}
+
+type jsonRequestJSONResponseFunc[Req any, Res any] func(context.Context, Req) (Res, error)
+
+func jsonRequestJSONResponseHandler[Req any, Res any](h jsonRequestJSONResponseFunc[Req, Res]) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req Req
+		if err := readJSON(w, r, &req); err != nil {
+			return
+		}
+		res, err := h(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, res)
+	}
+}
+
 type jsonRequestWithWriterFunc[Req any] func(context.Context, http.ResponseWriter, Req) error
 
-func jsonRequestWithWriter[Req any](h jsonRequestWithWriterFunc[Req]) http.HandlerFunc {
+func jsonRequestWithWriterHandler[Req any](h jsonRequestWithWriterFunc[Req]) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req Req
 		if err := readJSON(w, r, &req); err != nil {
@@ -78,7 +107,7 @@ func jsonRequestWithWriter[Req any](h jsonRequestWithWriterFunc[Req]) http.Handl
 
 type protectedJSONRequestWithWriterFunc[Req any] func(context.Context, http.ResponseWriter, string, Req) error
 
-func protectedJSONRequestWithWriter[Req any](h protectedJSONRequestWithWriterFunc[Req]) http.HandlerFunc {
+func protectedJSONRequestWithWriterHandler[Req any](h protectedJSONRequestWithWriterFunc[Req]) http.HandlerFunc {
 	hn := func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value(globals.UserContextKey).(string)
 		var req Req
@@ -95,7 +124,7 @@ func protectedJSONRequestWithWriter[Req any](h protectedJSONRequestWithWriterFun
 
 type protectedJSONRequestFunc[Req any] func(context.Context, string, Req) error
 
-func protectedJSONRequest[Req any](h protectedJSONRequestFunc[Req]) http.HandlerFunc {
+func protectedJSONRequestHandler[Req any](h protectedJSONRequestFunc[Req]) http.HandlerFunc {
 	hn := func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value(globals.UserContextKey).(string)
 		var req Req
@@ -113,7 +142,7 @@ func protectedJSONRequest[Req any](h protectedJSONRequestFunc[Req]) http.Handler
 
 type protectedJSONResponseFunc[Res any] func(context.Context, string) (Res, error)
 
-func protectedJSONResponse[Res any](h protectedJSONResponseFunc[Res]) http.HandlerFunc {
+func protectedJSONResponseHandler[Res any](h protectedJSONResponseFunc[Res]) http.HandlerFunc {
 	hn := func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value(globals.UserContextKey).(string)
 		res, err := h(r.Context(), userID)
@@ -128,7 +157,7 @@ func protectedJSONResponse[Res any](h protectedJSONResponseFunc[Res]) http.Handl
 
 type protectedJSONResponseWithRequestFunc[Res any] func(context.Context, *http.Request, string) (Res, error)
 
-func protectedJSONResponseWithRequest[Res any](h protectedJSONResponseWithRequestFunc[Res]) http.HandlerFunc {
+func protectedJSONResponseWithRequestHandler[Res any](h protectedJSONResponseWithRequestFunc[Res]) http.HandlerFunc {
 	hn := func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value(globals.UserContextKey).(string)
 		res, err := h(r.Context(), r, userID)
@@ -141,9 +170,9 @@ func protectedJSONResponseWithRequest[Res any](h protectedJSONResponseWithReques
 	return middleware.Private(http.HandlerFunc(hn)).ServeHTTP
 }
 
-type protectedJsonRequestJSONResponseFunc[Req any, Res any] func(context.Context, string, Req) (Res, error)
+type protectedJSONRequestJSONResponseFunc[Req any, Res any] func(context.Context, string, Req) (Res, error)
 
-func protectedJSONRequestJSONResponse[Req any, Res any](h protectedJsonRequestJSONResponseFunc[Req, Res]) http.HandlerFunc {
+func protectedJSONRequestJSONResponseHandler[Req any, Res any](h protectedJSONRequestJSONResponseFunc[Req, Res]) http.HandlerFunc {
 	hn := func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value(globals.UserContextKey).(string)
 		var req Req

@@ -67,7 +67,7 @@
 
     // We need to filter the child nodes for certain node categories as they are not to be displayed
     function _filter(node) {
-        return !['message', 'link'].includes(_state.map[node].category)
+        return !['message', 'link', 'record'].includes(_state.map[node].category)
     }
 </script>
 

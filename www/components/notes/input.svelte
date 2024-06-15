@@ -3,7 +3,7 @@
     import Icon from '@iconify/svelte'
     import Textarea from '$/components/atoms/textarea.svelte'
 
-    let { value, send, placeholder = 'Ask anything...', suggestions = [] } = $props()
+    let { value, send, placeholder = '', suggestions = [] } = $props()
     let focus = $state()
 
     function handleKeydown(event) {
@@ -15,7 +15,7 @@
 </script>
 
 <div
-    class="bg-primary border border-contrast focus-within:border-secondary px-8 py-4 focus-within:shadow-md transition w-full"
+    class="bg-primary focus-within:border border-x border-contrast focus-within:border-secondary h-full px-5 py-2 focus-within:shadow-md focus-within:translate-y-2 transition w-full"
     onfocusin={() => (focus = true)}
     onfocusout={() => (focus = false)}
 >
@@ -27,7 +27,7 @@
             bind:value
         />
         <button class="h-[24px] icon-btn" onclick={send}>
-            <Icon icon="mdi:send" />
+            <Icon icon="mdi:search" />
         </button>
     </div>
 
