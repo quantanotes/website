@@ -14,8 +14,8 @@
 
 <Hero />
 <Goals />
-<UseCases />
 <Speech />
+<UseCases />
 <Pricing />
 <Faq />
 <Cta />

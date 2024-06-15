@@ -1,4 +1,4 @@
-js:
+js-build:
 	bun run build
 
 js-dev-build:

@@ -1,8 +1,6 @@
-// TODO
-
-// Creates a generic CRUD controller for Notes and Maxwell
-// The name is the API prefix
-export default function createCRUD(name) {
+// Creates a generic CRUD controller for Notes and Io
+// Category is just the type of node we want to mount as our root node in the hierarchy
+export default function createNodeStore(category) {
     /// Storage states
 
     // Hierarchy root
@@ -19,9 +17,8 @@ export default function createCRUD(name) {
     // Drag context for moving nodes
     let dragover = $state('')
 
-
-    function callAPI(route, data) {
-        return fetch(`/api/${name}/${route}`, {
+    function call(route, data) {
+        return fetch(`/api/node/${route}`, {
             method: 'POST',
             body: data && JSON.stringify(data)
         })
@@ -59,12 +56,12 @@ export default function createCRUD(name) {
         // Initialises the state
         async mount() {
             if (root !== '') return
-            
-            const response = await callAPI('roots')
+
+            const response = await call(`root/${category}`)
             if (!response.ok) return
-            
+
             const newRoot = { ... await response.json(), children: [] }
-            root = newRoot.id
+            current = root = newRoot.id
             map[root] = newRoot
         },
 
@@ -76,35 +73,35 @@ export default function createCRUD(name) {
         },
 
         async create(parent) {
-            const response = await callAPI('create', { parent })
+            const response = await call('create', { parent })
             if (!response.ok) return
             // Refresh the children
-            // TODO just manually append the new id        
+            // TODO: manually append the new id        
             await this.children(parent)
         },
-    
+
         async update(id, title, content) {
-            const response = await callAPI('update', { id, title, content })
+            const response = await call('update', { id, title, content })
             // Incase we need to add new code
             if (!response.ok) return
         },
-    
+
         async remove(id, parent) {
             if (!parent) return
             if (this.ascendants(current).includes(id))
                 this.current = ''
-            
-            const response = await callAPI('delete', { id, parent })   
+
+            const response = await call('delete', { id, parent })
             if (!response.ok) return
-            
+
             delete map[id]
             map[parent].children = map[parent].children.filter((child) => child !== id)
         },
-    
+
         async move(id, to) {
-            const response = await callAPI('move', { id, to })
+            const response = await call('move', { id, to })
             if (!response.ok) return
-    
+
             const from = map[id].parent
             // Set new parent
             map[id].parent = to
@@ -113,30 +110,30 @@ export default function createCRUD(name) {
             // Add the new child to the new parent
             map[to].children = [...map[to].children, id]
         },
-    
+
         async children(id) {
-            const response = await callAPI('children', { id })
+            const response = await call('children', { id })
             if (!response.ok) return
-    
+
             const nodes = await response.json() || []
             // Ensure each node has a children field
             nodes.forEach((node) => (map[node.id] = { ...node, children: [] }))
             // Populate the parents children
             map[id].children = nodes.map((node) => node.id)
         },
-    
+
         async publish(id) {
-            const response = await callAPI('publish', { id })
+            const response = await call('publish', { id })
             if (!response.ok) return
-            map[id].public = await response.json()
+            map[id].public = 1
         },
-    
+
         async unpublish(id) {
-            const response = await callAPI('unpublish', { id })
+            const response = await call('unpublish', { id })
             if (!response.ok) return
-            map[id].public = await response.json()
+            map[id].public = 0
         },
-    
+
         ascendants(id, result = []) {
             const parent = map[id]?.parent
             if (map[parent]) {

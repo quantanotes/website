@@ -1,23 +1,24 @@
 <script>
+    import { inertia } from '@inertiajs/svelte'
     import Icon from '@iconify/svelte'
     import SectionDivider from '$/components/atoms/section-divider.svelte'
 
     const products = [
         {
-            name: 'notes',
-            description: 'a minimalistic yet powerful AI note taking app for your knowledge',
+            name: 'Notes',
+            description: 'A minimalistic yet powerful AI note taking app for your knowledge',
         },
         {
-            name: 'io',
-            description: 'an AI agent that connects with your tools and data',
+            name: 'Io',
+            description: 'An AI agent that connects with your tools and data',
         },
         {
-            name: 'space',
-            description: 'an open community to share knowledge',
+            name: 'Space',
+            description: 'An open community to share knowledge',
         },
         {
-            name: 'heisenberg',
-            description: 'a powerful AI native database for semantic search',
+            name: 'Heisenberg',
+            description: 'A powerful AI native database for semantic search',
         },
     ]
 
@@ -72,9 +73,11 @@
     >
         <div class="snap-center shrink-0 w-[calc(50%-160px)]"></div>
         {#each products as product, i}
-            <div
+            <a
                 bind:this={refs[i]}
                 class="border border-secondary flex flex-col h-96 justify-between my-8 p-4 shrink-0 snap-always snap-center hover:shadow-lg transition-shadow w-80"
+                href={`/${product.name.toLowerCase()}`}
+                use:inertia
             >
                 <div>
                     {product.name}
@@ -82,7 +85,7 @@
                 <div>
                     {product.description}
                 </div>
-            </div>
+            </a>
         {/each}
         <div class="snap-center shrink-0 w-[calc(100%-160px)]"></div>
     </div>

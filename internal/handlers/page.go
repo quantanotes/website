@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"net/http"
+	"quanta/internal/globals"
 	"quanta/internal/middleware"
-	"quanta/internal/single"
+	"quanta/internal/services"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type loader = func(http.ResponseWriter, *http.Request) (map[string]any, error)
@@ -15,16 +18,31 @@ func page(page string, loader loader) http.HandlerFunc {
 }
 
 func restrictedPage(public string, private string, loader loader) http.HandlerFunc {
-	f := func(w http.ResponseWriter, r *http.Request) {
-		if auth, ok := r.Context().Value("authorised").(bool); ok && auth {
+	h := func(w http.ResponseWriter, r *http.Request) {
+		if auth, ok := r.Context().Value(globals.AuthorisedContextKey).(bool); ok && auth {
 			renderPage(w, r, private, loader)
 		} else {
 			renderPage(w, r, public, loader)
 		}
 	}
-	h := middleware.Restricted(http.HandlerFunc(f))
-	return func(w http.ResponseWriter, r *http.Request) {
-		h.ServeHTTP(w, r)
+	return middleware.Restricted(http.HandlerFunc(h)).ServeHTTP
+}
+
+func getParam(param string) loader {
+	return func(w http.ResponseWriter, r *http.Request) (map[string]any, error) {
+		props := make(map[string]any, 1)
+		props[param] = chi.URLParam(r, param)
+		return props, nil
+	}
+}
+
+func getQuery(queries ...string) loader {
+	return func(w http.ResponseWriter, r *http.Request) (map[string]any, error) {
+		props := make(map[string]any, len(queries))
+		for _, q := range queries {
+			props[q] = r.URL.Query().Get(q)
+		}
+		return props, nil
 	}
 }
 
@@ -36,12 +54,12 @@ func renderPage(w http.ResponseWriter, r *http.Request, page string, loader load
 
 	if loader != nil {
 		if props, err = loader(w, r); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			writeError(w, err)
 			return
 		}
 	}
 
-	if err := single.Inertia.Render(w, r, page, props); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := services.Inertia.Render(w, r, page, props); err != nil {
+		writeError(w, err)
 	}
 }

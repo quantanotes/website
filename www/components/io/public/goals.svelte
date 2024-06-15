@@ -1,28 +1,21 @@
 <script>
-    import SectionDivider from '$/components/atoms/section-divider.svelte'
+    import TitledSection from '$/components/common/titled-section.svelte'
 
     const goals = [
         {
-            goal: 'problem solving',
+            goal: 'Problem solving',
             description:
-                'io is capable of connecting to the internet, your notes and your databases to perform complex tasks and automate your workflows',
+                'Io connects to the internet, your documents and external tools to complete tasks and automate your workflow.',
         },
         {
-            goal: 'human solving',
+            goal: 'Human solving',
             description:
-                'we designed io to be as human oriented as possible. io provides you the emotional and cognitive tools to help you overcome your problems whether personal or practical',
+                "We designed Io with humanity at it's core. Io is like a journal or that helps you process your thoughts and feelings.",
         },
     ]
 </script>
 
-<div class="p-4">
-    <h1 class="flex font-bold justify-between mx-auto text-4xl text-center w-fit">goals</h1>
-
-    <br />
-    <br />
-    <br />
-    <br />
-
+<TitledSection title={'Goals'}>
     <div class="flex flex-row flex-wrap justify-evenly gap-8 max-w-4xl mx-auto">
         {#each goals as goal}
             <div class="border border-secondary flex flex-col justify-between h-96 p-4 w-80">
@@ -35,6 +28,4 @@
             </div>
         {/each}
     </div>
-</div>
-
-<SectionDivider />
+</TitledSection>

@@ -5,21 +5,25 @@ import laravel from 'laravel-vite-plugin'
 const dev = process.env.APP_ENV === 'DEV'
 
 export default defineConfig({
+    base: '/static/build',
     build: {
         bundle: true,
-        minify: true,
         emptyOutDir: true,
+        minify: true,
+        modulePreload: false,
+        sourcemap: dev,
     },
     plugins: [
-        svelte(),
+        svelte({}),
         laravel({
             input: [`www/${dev ? 'dev' : 'app'}.js`, 'www/app.css'],
-            ssr: 'www/ssr.js',
-            buildDirectory: 'build',
             publicDirectory: 'static',
-            ssrOutputDirectory: 'ssr',
             refresh: ['www/**'],
+            ssr: 'www/ssr.js',
+            ssrOutputDirectory: 'ssr',
         }),
     ],
-    resolve: { alias: { '$': './www', }, },
+    resolve: {
+        alias: { '$': './www' },
+    },
 })

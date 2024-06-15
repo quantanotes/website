@@ -1,10 +1,9 @@
 import { mount } from 'svelte'
-import { createInertiaApp } from '@westacks/inertia-svelte'
+import { createInertiaApp } from '@inertiajs/svelte'
+
+const pages = import.meta.glob('./pages/**/*.svelte')
 
 createInertiaApp({
-    resolve: (name) => {
-        const pages = import.meta.glob('./pages/**/*.svelte', { eager: true })
-        return pages[`./pages/${name}.svelte`]
-    },
+    resolve: async (name) => pages[`./pages/${name}.svelte`](),
     setup: ({ el, App, props }) => { mount(App, { target: el, props }) }
 })

@@ -3,9 +3,9 @@
     import Input from '../input.svelte'
 
     const suggestions = [
-        'can you keep me accountable for me meditation habit?',
-        'build an automation for my catering business',
-        'scale and automate my email outreach campaign',
+        'Can you keep me accountable for me meditation habit?',
+        'Build an automation for my catering business',
+        'Scale and automate my email outreach campaign',
     ]
 
     let value = $state()
@@ -17,5 +17,5 @@
 </script>
 
 <div class="max-w-4xl mx-auto px-4">
-    <Input bind:value {suggestions} />
+    <Input bind:value placeholder={'Ask Io anything...'} {send} {suggestions} />
 </div>

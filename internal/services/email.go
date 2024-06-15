@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/smtp"
 	"quanta/internal/globals"
-	"quanta/internal/single"
+)
+
+var (
+	Email     smtp.Auth
+	emailAddr string
 )
 
 func SendMail(to string, subject string, msg string) error {
@@ -16,9 +20,14 @@ func SendMail(to string, subject string, msg string) error {
 		"%s", to, subject, msg)
 
 	return smtp.SendMail(
-		globals.EmailHost+":"+globals.EmailPort,
-		single.Email,
+		emailAddr,
+		Email,
 		"robots@quanta.uno",
 		[]string{to},
 		[]byte(fullMsg))
+}
+
+func init() {
+	Email = smtp.PlainAuth("", globals.Env("EMAIL_USERNAME"), globals.Env("EMAIL_PASSWORD"), globals.Env("EMAIL_HOST"))
+	emailAddr = globals.Env("EMAIL_HOST") + globals.Env("EMAIL_PORT")
 }

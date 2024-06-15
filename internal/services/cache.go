@@ -1,4 +1,4 @@
-package single
+package services
 
 import (
 	"quanta/internal/globals"
@@ -9,7 +9,7 @@ import (
 var Cache *redis.Client
 
 func init() {
-	opts, err := redis.ParseURL(globals.RedisURL)
+	opts, err := redis.ParseURL(globals.Env("REDIS_URL"))
 	if err != nil {
 		panic(err)
 	}

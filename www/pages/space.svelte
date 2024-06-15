@@ -16,15 +16,15 @@
         const response = await fetch('/api/space/children', {
             method: 'POST',
             body: JSON.stringify({
-                id,
+                parent: id,
             }),
         })
         const nodes = (await response.json()) || []
         await addNodes(nodes)
     }
 
-    async function algorithm() {
-        const response = await fetch('/api/space/algorithm', {
+    async function roots() {
+        const response = await fetch('/api/space/roots', {
             method: 'POST',
         })
         const nodes = (await response.json()) || []
@@ -48,7 +48,7 @@
     }
 
     onMount(() => {
-        algorithm()
+        roots()
     })
 
     function onNodeClick(node) {
@@ -59,7 +59,7 @@
 <Space bind:data {onNodeClick} />
 <Navbar bind:current />
 <div class="absolute pt-11 w-screen">
-    <div class="max-w-3xl mx-auto p-4">
+    <div class="h-fit max-w-3xl mx-auto p-4">
         <Input />
     </div>
 </div>

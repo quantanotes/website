@@ -2,9 +2,9 @@
     import SectionDivider from '$/components/atoms/section-divider.svelte'
 </script>
 
-<div class="font-bold font-serif p-4 text-5xl md:text-7xl">
-    Facebook, TikTok and Google control society with AI. Our mission is to take back control, using AI to
-    enhance human thinking and productivity.
+<div class="font-bold p-4 text-5xl md:text-7xl">
+    We believe AI can enhance the human mind to unlock it's maximum potential. Our mission is to
+    empower the individual to become übermensch.
 </div>
 
 <SectionDivider />

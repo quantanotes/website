@@ -1,6 +1,5 @@
 <script>
     import { inertia, page, router } from '@inertiajs/svelte'
-    import auth from '$/stores/auth.svelte.js'
     import {
         emailSchema,
         matchingSchema,
@@ -30,6 +29,12 @@
         return message || 'An unexpected error has occurred, try again later.'
     }
 </script>
+
+<br />
+<br />
+<h1 class="mx-auto text-lg w-fit">Get started with Quanta</h1>
+<br />
+<br />
 
 {#if !verify}
     <Form

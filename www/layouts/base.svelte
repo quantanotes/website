@@ -6,9 +6,9 @@
     import ContextMenu from '$/components/common/context-menu.svelte'
 
     let { children } = $props()
-
-    onMount(async () => {
-        await auth.refreshDetails()
+    
+    onMount(() => {
+        auth.refreshDetails()
     })
 </script>
 

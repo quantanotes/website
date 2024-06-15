@@ -5,14 +5,12 @@ import (
 	"quanta/internal/model"
 )
 
-var spaceAlgorithm = pubJSONResHandler(
-	func(ctx context.Context) (any, error) {
-		return model.GetKnowledgeWherePublic(ctx)
-	},
-)
+var spaceRoots = jsonResponseHandler(model.GetNodesWherePublic)
 
-var spaceChildren = pubJSONReqJSONResHandler(
-	func(ctx context.Context, req struct{ Id string }) ([]model.Knowledge, error) {
-		return model.GetKnowledgeChildren(ctx, req.Id)
-	},
-)
+type spaceChildrenRequest struct {
+	Parent string
+}
+
+var spaceChildren = jsonRequestJSONResponseHandler(func(ctx context.Context, req spaceChildrenRequest) ([]model.Node, error) {
+	return model.GetNodeChildrenWherePublic(ctx, req.Parent)
+})

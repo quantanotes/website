@@ -41,7 +41,7 @@
                     <a
                         class="hover:font-bold transition text-center uppercase"
                         href={link.href || '#'}
-                        onmouseenter={() => link.children && show(link)}
+                        onmouseenter={() => show(link)}
                         use:inertia
                     >
                         {link.name}
@@ -50,7 +50,7 @@
             </div>
         {/snippet}
     </Navbar>
-    {#if active}
+    {#if active && active.children}
         <div
             class="absolute bg-primary gap-4 p-4 w-full z-20"
             transition:fade={{ duration: 200 }}
@@ -58,7 +58,7 @@
             {#each active.children as link}
                 <a
                     class="block hover:font-bold max-w-4xl mx-auto transition uppercase"
-                    href={link.href || '#'}
+                    href={link.href}
                     use:inertia
                 >
                     {link.name}

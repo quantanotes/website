@@ -3,7 +3,7 @@
 </script>
 
 <script>
-    import { onMount } from 'svelte'
+    import { onMount, untrack } from 'svelte'
     import io from '$/stores/io.svelte.js'
     import Sidebar from '$/components/common/sidebar/sidebar.svelte'
     import Input from '$/components/io/input.svelte'
@@ -24,6 +24,12 @@
         await io.mount()
     })
 
+    $effect(() => {
+        if (io.current) {
+            getThread()
+        } 
+    })
+
     async function send() {
         if (input.length <= 0 || generating) {
             return
@@ -31,13 +37,17 @@
 
         thread = [...thread, { role: 'user', content: input, citations: [] }]
         input = ''
+        generating = true
         abort = new AbortController()
+        
         await scroll()
 
         try {
-            const stream = io.chat(thread, abort)
-            const reply = { role: 'assistant', content: '', citations: [] }
             let first = true
+
+            const reply = { role: 'assistant', content: '', citations: [] }
+            const stream = io.chat(thread, abort)
+
             for await (const part of stream) {
                 if (first) {
                     thread.push(reply)
@@ -45,6 +55,7 @@
                 }
                 thread[thread.length - 1].content += part.content
                 thread[thread.length - 1].citations.push(...part.citations)
+                scroll()
             }
         } catch (error) {
             handleError(error)
@@ -53,15 +64,30 @@
         }
     }
 
+    async function getThread() {
+        await io.children(io.current)
+        thread = untrack(() => io
+            .map[io.current]
+            .children
+            .map((id) => io.map[id])
+            .filter((node) => node.category === 'message')
+            .map((node) => {
+                try {
+                    let result = JSON.parse(node.content)
+                    console.log(result)
+                    return result
+                } catch {
+                    return undefined
+                }
+            }))
+            // .filter((msg) => msg !== undefined))
+    }
+
     function handleError(error) {
+        console.error(error)
         const content = thread.at(-1).content
         input = content
         thread = [...thread.slice(0, thread.length - 1)]
-        if (error.status == 401) {
-            
-        } else {
-            console.error(error)
-        }
     }
 
     async function scroll() {
