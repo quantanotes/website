@@ -27,7 +27,7 @@
     $effect(() => {
         if (io.current) {
             getThread()
-        } 
+        }
     })
 
     async function send() {
@@ -39,7 +39,7 @@
         input = ''
         generating = true
         abort = new AbortController()
-        
+
         await scroll()
 
         try {
@@ -66,21 +66,21 @@
 
     async function getThread() {
         await io.children(io.current)
-        thread = untrack(() => io
-            .map[io.current]
-            .children
-            .map((id) => io.map[id])
-            .filter((node) => node.category === 'message')
-            .map((node) => {
-                try {
-                    let result = JSON.parse(node.content)
-                    console.log(result)
-                    return result
-                } catch {
-                    return undefined
-                }
-            }))
-            // .filter((msg) => msg !== undefined))
+        thread = untrack(() =>
+            io.map[io.current].children
+                .map((id) => io.map[id])
+                .filter((node) => node.category === 'message')
+                .map((node) => {
+                    try {
+                        let result = JSON.parse(node.content)
+                        console.log(result)
+                        return result
+                    } catch {
+                        return undefined
+                    }
+                }),
+        )
+        // .filter((msg) => msg !== undefined))
     }
 
     function handleError(error) {
@@ -106,22 +106,24 @@
 <div class="absolute h-screen w-screen">
     <Navbar {toggleSidebar} />
     <div class="pt-11 h-full w-full">
-        <Sidebar bind:show={showSidebar} bind:width={sidebarWidth} state={io} >
+        <Sidebar bind:show={showSidebar} bind:width={sidebarWidth} state={io}>
             {#snippet contextMenu(id, parent)}
-                <Actions {id} {parent} >
+                <Actions {id} {parent}>
                     {#snippet settings()}
                         <Settings {id} />
                     {/snippet}
                 </Actions>
             {/snippet}
         </Sidebar>
-        
+
         <div
             class="h-full transition-all w-full"
             style={`padding-left: ${showSidebar ? sidebarWidth : 0}px`}
         >
-            <div class="flex flex-col gap-4 h-full items-center justify-center max-w-7xl mx-auto p-4 w-full">
-                <Thread bind:thread bind:container />
+            <div
+                class="flex flex-col gap-4 h-full items-center justify-center max-w-7xl mx-auto p-4 w-full"
+            >
+                <Thread bind:thread bind:container disableTransitions={true} />
                 <div class="flex-grow w-full">
                     <Input bind:value={input} {send} />
                 </div>

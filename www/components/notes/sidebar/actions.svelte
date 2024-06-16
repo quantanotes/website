@@ -1,12 +1,12 @@
 <script>
-    import contextMenu from '$/stores/context-menu.svelte.js'
+    import contextMenu from '$/stores/portals.svelte.js'
     import notes from '$/stores/notes.svelte.js'
-    import Actions from '$/components/atoms/actions.svelte'
+    import Actions from '$/components/atoms/context-menu.svelte'
 
-    let { id, parent, share } = $props() 
+    let { id, parent, share } = $props()
 
     const actions = [
-        { name: 'New', action: async () => await notes.create(id) },
+        { name: 'New', action: async () => await notes.create(id, 'note') },
         { name: 'Delete', action: async () => await notes.remove(id, parent) },
         {
             name: 'Share',

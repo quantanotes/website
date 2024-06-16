@@ -18,7 +18,7 @@
         setContent(title, content)
     })
 
-    function onupdate(editor) {
+    function handleUpdate(editor) {
         const markdown = editor.storage.markdown.getMarkdown()
         notes.map[notes.current].title = new DOMParser()
             .parseFromString(markdown, 'text/html')
@@ -32,17 +32,13 @@
         clearTimeout(saveTimeout)
         saveTimeout = setTimeout(() => {
             if (!notes.current) return
-            let title = notes.map[notes.current].title || ''
-            let content = notes.map[notes.current].content || ''
-            notes.update(notes.current, title, content)
-        }, 1000 * 2)
+            notes.update(notes.current)
+        }, 200)
     }
 </script>
 
 <div class="h-full max-w-3xl mb-64 mx-auto prose prose-neutral dark:prose-invert px-4 py-2 w-full">
-    <div class={!notes.current && 'hidden'} transition:blur>
-        {#key notes.current}
-            <Tiptap {onupdate} bind:setContent />
-        {/key}
+    <div class={!notes.current && 'hidden'}>
+        <Tiptap onupdate={handleUpdate} bind:setContent />
     </div>
 </div>

@@ -1,17 +1,18 @@
 <script>
     import { fade } from 'svelte/transition'
     import Icon from '@iconify/svelte'
-    import Dropdown from '$/components/atoms/dropdown.svelte'
+    import DropdownMenu from '$/components/atoms/dropdown-menu.svelte'
 
     let { id, state: _state, contextMenu } = $props()
     let expanded = $state(false)
-    let children = $derived(
-        _state.map[id]?.children.toSorted(sorter).filter(_filter) || []
-    )
+    let children = $derived(_state.map[id]?.children.toSorted(sorter).filter(_filter) || [])
     // Counts nested drag enters
     let dragEnterCount = $state(0)
     // Checks if we need to expand due to drag and drop
-    let dragExpanded = $derived(dragEnterCount > 0 && !(_state.moving === id || _state.ascendants(id).includes(_state.moving)))
+    let dragExpanded = $derived(
+        dragEnterCount > 0 &&
+            !(_state.moving === id || _state.ascendants(id).includes(_state.moving)),
+    )
 
     function expand() {
         if (!expanded) _state.children(id)
@@ -96,21 +97,18 @@
             {_state.map[id]?.title}
         </button>
 
-        <Dropdown class="h-[24px] icon-btn">
+        <DropdownMenu class="h-[24px] icon-btn">
             <Icon icon="mdi:dots-horizontal" />
             {#snippet menu()}
                 {@render contextMenu(id, _state.map[id].parent)}
             {/snippet}
-        </Dropdown>
+        </DropdownMenu>
     </div>
 
     {#if expanded || dragExpanded}
-        <div
-            class="ml-2"
-            transition:fade={{ duration: 100 }}
-        >
+        <div class="ml-2" transition:fade={{ duration: 100 }}>
             {#each children as id}
-                <svelte:self id={id} state={_state} {contextMenu} />
+                <svelte:self {id} state={_state} {contextMenu} />
             {/each}
         </div>
     {/if}

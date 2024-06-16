@@ -12,6 +12,6 @@
     {#if view === 'note'}
         <Editor />
     {:else if view == 'table'}
-        <Table />
+        <Table state={notes} />
     {/if}
 </div>

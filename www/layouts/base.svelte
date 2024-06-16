@@ -1,12 +1,11 @@
 <script>
     import { onMount } from 'svelte'
-    import { blur } from 'svelte/transition'
-    import { page } from '@inertiajs/svelte'
     import auth from '$/stores/auth.svelte.js'
-    import ContextMenu from '$/components/common/context-menu.svelte'
+    import { dialog, contextMenu } from '$/stores/portals.svelte'
+    import Portal from '$/components/common/portal.svelte'
 
     let { children } = $props()
-    
+
     onMount(() => {
         auth.refreshDetails()
     })
@@ -16,10 +15,9 @@
     <title>Quanta</title>
 </svelte:head>
 
-<ContextMenu />
+<Portal portal={contextMenu} />
+<Portal portal={dialog} />
 
-{#key $page.url}
-    <div class="absolute inset-0 h-screen overflow-x-hidden w-screen" transition:blur={{ duration: 300 }}>
-        {@render children()}
-    </div>
-{/key}
+<div class="absolute inset-0 h-screen overflow-x-hidden w-screen">
+    {@render children()}
+</div>

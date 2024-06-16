@@ -17,5 +17,5 @@ export default {
         darkMode = !darkMode
         document.documentElement.classList.toggle('dark')
         localStorage.setItem('darkMode', JSON.stringify(darkMode))
-    }
+    },
 }

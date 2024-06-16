@@ -4,8 +4,7 @@
     import CtaAtom from './cta-atom.svelte'
 
     const headline = '10X yourself with Io'
-    const tagline =
-        'Io is an AI that completes tasks to make progress towards your goals.'
+    const tagline = 'Io is an AI that completes tasks to make progress towards your goals.'
 </script>
 
 <Hero {headline} {tagline} />

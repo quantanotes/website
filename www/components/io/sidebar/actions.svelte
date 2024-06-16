@@ -1,12 +1,12 @@
 <script>
-    import contextMenu from '$/stores/context-menu.svelte.js'
     import io from '$/stores/io.svelte.js'
-    import Actions from '$/components/atoms/actions.svelte'
+    import { contextMenu } from '$/stores/portals.svelte.js'
+    import ContextMenu from '$/components/atoms/context-menu.svelte'
 
     let { id, parent, share, settings } = $props()
 
     const actions = [
-        { name: 'New', action: async () => await io.create(id) },
+        { name: 'New', action: async () => await io.create(id, 'thread') },
         { name: 'Delete', action: async () => await io.remove(id, parent) },
         {
             name: 'Share',
@@ -19,4 +19,4 @@
     ]
 </script>
 
-<Actions {actions} />
+<ContextMenu {actions} />

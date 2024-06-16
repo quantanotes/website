@@ -15,7 +15,7 @@ export default Extension.create({
 
     addProseMirrorPlugins() {
         return [DraggablePlugin]
-    }
+    },
 })
 
 const DraggablePlugin = new Plugin({
@@ -97,8 +97,8 @@ const DraggablePlugin = new Plugin({
             dragend(view) {
                 view.dom.classList.remove('dragging')
             },
-        }
-    }
+        },
+    },
 })
 
 function nodeDOMAtCoords(coords) {
@@ -107,13 +107,15 @@ function nodeDOMAtCoords(coords) {
         .find(
             (element) =>
                 element.parentElement?.matches?.('.ProseMirror') ||
-                element.matches([
-                    'li',
-                    'p:not(:first-child)',
-                    'pre',
-                    'blockquote',
-                    'h1:not(.title), h2, h3, h4, h5, h6',
-                ].join(', '))
+                element.matches(
+                    [
+                        'li',
+                        'p:not(:first-child)',
+                        'pre',
+                        'blockquote',
+                        'h1:not(.title), h2, h3, h4, h5, h6',
+                    ].join(', '),
+                ),
         )
 }
 
@@ -145,7 +147,6 @@ function nodePosAtDOM(node, view) {
     })?.inside
 }
 
-
 function handleDragStart(event, view) {
     view.focus()
 
@@ -161,9 +162,7 @@ function handleDragStart(event, view) {
     const nodePos = nodePosAtDOM(node, view)
     if (nodePos == null || nodePos < 0) return
 
-    view.dispatch(
-        view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos))
-    )
+    view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos)))
 
     const slice = view.state.selection.content()
     const { dom, text } = __serializeForClipboard(view, slice)
@@ -193,9 +192,7 @@ function handleClick(event, view) {
     const nodePos = nodePosAtDOM(node, view)
     if (!nodePos) return
 
-    view.dispatch(
-        view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos))
-    )
+    view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos)))
 }
 
 function hideDragHandle() {

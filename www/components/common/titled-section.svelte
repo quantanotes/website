@@ -1,7 +1,7 @@
 <script>
     import SectionDivider from '../atoms/section-divider.svelte'
 
-    let { title, children} = $props()
+    let { title, children } = $props()
 </script>
 
 <div class="p-4">

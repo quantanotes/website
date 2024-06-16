@@ -6,10 +6,7 @@ export const usernameSchema = z
     .string()
     .min(3, 'At least 3 characters')
     .max(24, 'Less than 24 characters')
-    .regex(
-        /^[a-zA-Z0-9._-]+$/,
-        'Alphanumeric, hyphen, underscore, or full stop only'
-    )
+    .regex(/^[a-zA-Z0-9._-]+$/, 'Alphanumeric, hyphen, underscore, or full stop only')
 
 export const nameSchema = z
     .string()

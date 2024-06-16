@@ -7,7 +7,7 @@ io.chat = async function* (thread, abort) {
 
     try {
         if (!io.current) {
-            throw new Error('You\'re a cheeky rapscallion if you\'re seeing this.')
+            throw new Error("You're a cheeky rapscallion if you're seeing this.")
         }
         const threadID = io.current
 

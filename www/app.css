@@ -24,7 +24,7 @@
     }
 
     body {
-        @apply bg-primary dark:dark-colours font-sans text-secondary;
+        @apply dark:dark-colours bg-primary font-sans text-secondary;
     }
 }
 
@@ -34,27 +34,27 @@
     }
 
     .btn {
-        @apply bg-primary border border-contrast p-2 hover:border-secondary hover:shadow-lg transition-all;
+        @apply border border-contrast bg-primary p-2 transition-all hover:border-secondary hover:shadow-lg;
     }
 
     .icon-btn {
-        @apply h-fit leading-[0px] text-contrast text-lg hover:text-secondary transition;
+        @apply h-fit text-lg leading-[0px] text-contrast transition hover:text-secondary;
     }
-    
+
     .input {
-        @apply bg-primary border border-contrast hover:border-contrast-light focus:border-secondary px-4 py-2 focus:outline-none placeholder:text-contrast-light text-secondary transition-colors w-full;
+        @apply w-full border border-contrast bg-primary px-4 py-2 text-secondary transition-colors placeholder:text-contrast-light hover:border-contrast-light focus:border-secondary focus:outline-none;
     }
 
     .range {
-        @apply appearance-none bg-primary border border-contrast hover:border-secondary h-8 transition-colors;
+        @apply h-8 appearance-none border border-contrast bg-primary transition-colors hover:border-secondary;
     }
 
     .range::-webkit-slider-thumb {
-        @apply appearance-none bg-secondary cursor-pointer h-8 rounded-none w-8;
+        @apply h-8 w-8 cursor-pointer appearance-none rounded-none bg-secondary;
     }
 
     .range::-moz-range-thumb {
-        @apply appearance-none bg-secondary cursor-pointer h-8 rounded-none w-8;
+        @apply h-8 w-8 cursor-pointer appearance-none rounded-none bg-secondary;
     }
 }
 
@@ -73,10 +73,20 @@
     }
 
     @keyframes shake {
-		0% { transform: translateX(0); }
-		25% { transform: translateX(-8px); }
-		50% { transform: translateX(8px); }
-		75% { transform: translateX(-8px); }
-		100% { transform: translateX(0); }
-	}
+        0% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-8px);
+        }
+        50% {
+            transform: translateX(8px);
+        }
+        75% {
+            transform: translateX(-8px);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
 }

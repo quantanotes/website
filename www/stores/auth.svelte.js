@@ -24,6 +24,6 @@ export default {
             } else {
                 user = await response.json()
             }
-        } catch { }
+        } catch {}
     },
 }

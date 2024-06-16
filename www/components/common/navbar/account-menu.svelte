@@ -1,7 +1,7 @@
 <script>
     import { router } from '@inertiajs/svelte'
     import auth from '$/stores/auth.svelte.js'
-    import Actions from '$/components/atoms/actions.svelte'
+    import ContextMenu from '$/components/atoms/context-menu.svelte'
 
     let actions = $derived(
         auth.user
@@ -17,4 +17,4 @@
     )
 </script>
 
-<Actions {actions} />
+<ContextMenu {actions} />

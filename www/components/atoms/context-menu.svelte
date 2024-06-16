@@ -1,5 +1,5 @@
 <script>
-    import contextMenu from '$/stores/context-menu.svelte.js'
+    import { contextMenu } from '$/stores/portals.svelte.js'
 
     /** @type {{ actions: { name: string, action: (event: Event) => void }[] }} */
     let { actions } = $props()

@@ -36,10 +36,7 @@
         let valid = true
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i]
-            if (
-                input.schema &&
-                !input.schema.safeParse(data[input.name]).success
-            ) {
+            if (input.schema && !input.schema.safeParse(data[input.name]).success) {
                 valid = false
                 inputs[i] = { ...input, shake: true }
             }
@@ -55,10 +52,7 @@
             <br />
             <br />
         {:else}
-            <form
-                class="flex flex-col gap-4 text-center w-96"
-                on:submit={handleSubmit}
-            >
+            <form class="flex flex-col gap-4 text-center w-96" on:submit={handleSubmit}>
                 {#each inputs as input}
                     <Input
                         name={input.name}

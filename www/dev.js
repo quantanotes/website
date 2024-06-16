@@ -5,5 +5,7 @@ const pages = import.meta.glob('./pages/**/*.svelte')
 
 createInertiaApp({
     resolve: async (name) => pages[`./pages/${name}.svelte`](),
-    setup: ({ el, App, props }) => { mount(App, { target: el, props }) }
+    setup: ({ el, App, props }) => {
+        mount(App, { target: el, props })
+    },
 })

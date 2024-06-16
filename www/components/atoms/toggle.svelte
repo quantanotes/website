@@ -1,5 +1,5 @@
 <script>
-    let { active = false, onToggle }  = $props()
+    let { active = false, onToggle } = $props()
 
     function toggle() {
         active = !active

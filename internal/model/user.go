@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	userColumns = columns(User{})
+	userColumns = "id, created_at, username, full_name, preferred_name, email, password, image, customer_id"
 )
 
 type User struct {

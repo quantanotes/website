@@ -45,7 +45,9 @@
     {#each links as link}
         <div class="border border-contrast flex flex-col gap-4 p-4">
             <div class="flex justify-between">
-                <a class="truncate" href="https://quanta.uno/notes/{link.id}">quanta.uno/notes/{link.id}</a>
+                <a class="truncate" href="https://quanta.uno/notes/{link.id}"
+                    >quanta.uno/notes/{link.id}</a
+                >
                 <button class="icon-btn" onclick={() => deleteLink(link.id)}>
                     <Icon icon="mdi:delete" />
                 </button>

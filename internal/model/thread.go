@@ -30,12 +30,12 @@ func DeleteMessage(ctx context.Context, id string, userID string) error {
 	return DeleteNodeWhereAuthor(ctx, id, userID)
 }
 
-func (m *Message) toNode(thread string, user string) Node {
+func (m *Message) toNode(threadID string, userID string) Node {
 	contentBytes, _ := json.Marshal(m)
 	content := string(contentBytes)
 	return Node{
-		Parent:   thread,
-		Author:   user,
+		Parent:   threadID,
+		Author:   userID,
 		Category: "message",
 		Title:    utils.EmptyString(),
 		Content:  &content,

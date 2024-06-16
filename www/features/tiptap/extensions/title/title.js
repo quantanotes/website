@@ -17,7 +17,7 @@ export default Node.create({
         return [
             {
                 tag: 't',
-            }
+            },
         ]
     },
 

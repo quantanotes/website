@@ -59,7 +59,7 @@
 <div class="absolute h-screen overflow-auto w-screen">
     <Navbar {toggleSidebar} bind:inputValue={input} inputSend={send} />
     <div class="pt-11 h-full">
-        <Sidebar bind:show={showSidebar} bind:width={sidebarWidth} state={notes} >
+        <Sidebar bind:show={showSidebar} bind:width={sidebarWidth} state={notes}>
             {#snippet contextMenu(id, parent)}
                 <Actions {id} {parent}>
                     {#snippet share()}

@@ -20,7 +20,7 @@ export default function createNodeStore(category) {
     function call(route, data) {
         return fetch(`/api/node/${route}`, {
             method: 'POST',
-            body: data && JSON.stringify(data)
+            body: data && JSON.stringify(data),
         })
     }
 
@@ -60,36 +60,34 @@ export default function createNodeStore(category) {
             const response = await call(`root/${category}`)
             if (!response.ok) return
 
-            const newRoot = { ... await response.json(), children: [] }
+            const newRoot = { ...(await response.json()), children: [] }
             current = root = newRoot.id
             map[root] = newRoot
         },
 
         // Sets the current focus
         open(id) {
-            if (current)
-                this.update(current, map[current].title, map[current].content)
+            if (current) this.update(current)
             current = id
         },
 
-        async create(parent) {
-            const response = await call('create', { parent })
+        async create(parent, category) {
+            const response = await call('create', { parent, category })
             if (!response.ok) return
             // Refresh the children
-            // TODO: manually append the new id        
+            // TODO: manually append the new id
             await this.children(parent)
         },
 
-        async update(id, title, content) {
-            const response = await call('update', { id, title, content })
+        async update(id) {
+            const response = await call('update', map[id])
             // Incase we need to add new code
             if (!response.ok) return
         },
 
         async remove(id, parent) {
             if (!parent) return
-            if (this.ascendants(current).includes(id))
-                this.current = ''
+            if (this.ascendants(current).includes(id)) this.current = ''
 
             const response = await call('delete', { id, parent })
             if (!response.ok) return
@@ -115,7 +113,7 @@ export default function createNodeStore(category) {
             const response = await call('children', { id })
             if (!response.ok) return
 
-            const nodes = await response.json() || []
+            const nodes = (await response.json()) || []
             // Ensure each node has a children field
             nodes.forEach((node) => (map[node.id] = { ...node, children: [] }))
             // Populate the parents children
@@ -141,6 +139,6 @@ export default function createNodeStore(category) {
                 return this.ascendants(parent, result)
             }
             return result
-        }
+        },
     }
 }

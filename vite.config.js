@@ -24,6 +24,6 @@ export default defineConfig({
         }),
     ],
     resolve: {
-        alias: { '$': './www' },
+        alias: { $: './www' },
     },
 })

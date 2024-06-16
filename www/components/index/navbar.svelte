@@ -4,13 +4,16 @@
     import Navbar from '$/components/common/navbar/navbar.svelte'
 
     const links = [
-        { name: 'home', href: '/'},
-        { name: 'products', children: [
-            { name: 'notes', href: '/notes' },
-            { name: 'io', href: '/io' },
-            { name: 'space', href: '/space' },
-            { name: 'heisenberg', href: '/heisenberg' },
-        ]},
+        { name: 'home', href: '/' },
+        {
+            name: 'products',
+            children: [
+                { name: 'notes', href: '/notes' },
+                { name: 'io', href: '/io' },
+                { name: 'space', href: '/space' },
+                { name: 'heisenberg', href: '/heisenberg' },
+            ],
+        },
     ]
 
     let active = $state(null)
@@ -20,7 +23,7 @@
     }
 
     function hide() {
-        active = null 
+        active = null
     }
 </script>
 
@@ -28,8 +31,7 @@
     <div
         class="absolute backdrop-blur-md h-screen mt-11 overflow-hidden w-full z-10"
         transition:fade={{ duration: 200 }}
-    >
-    </div>
+    ></div>
 {/if}
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -51,10 +53,7 @@
         {/snippet}
     </Navbar>
     {#if active && active.children}
-        <div
-            class="absolute bg-primary gap-4 p-4 w-full z-20"
-            transition:fade={{ duration: 200 }}
-        >
+        <div class="absolute bg-primary gap-4 p-4 w-full z-20" transition:fade={{ duration: 200 }}>
             {#each active.children as link}
                 <a
                     class="block hover:font-bold max-w-4xl mx-auto transition uppercase"

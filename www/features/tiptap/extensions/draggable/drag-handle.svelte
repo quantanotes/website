@@ -13,6 +13,6 @@
 
 <style lang="postcss">
     :global(.drag-handle) {
-        @apply fixed transition-opacity z-50;
+        @apply fixed z-50 transition-opacity;
     }
 </style>
