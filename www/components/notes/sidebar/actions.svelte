@@ -1,5 +1,5 @@
 <script>
-    import contextMenu from '$/stores/portals.svelte.js'
+    import { dialog } from '$/stores/portals.svelte.js'
     import notes from '$/stores/notes.svelte.js'
     import Actions from '$/components/atoms/context-menu.svelte'
 
@@ -10,7 +10,7 @@
         { name: 'Delete', action: async () => await notes.remove(id, parent) },
         {
             name: 'Share',
-            action: (event) => contextMenu.show(event.target, share, 'bottom', '', event),
+            action: (event) => dialog.show(event.target, share, 'bottom', '', event),
         },
     ]
 </script>

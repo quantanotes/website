@@ -1,6 +1,6 @@
 <script>
     import io from '$/stores/io.svelte.js'
-    import { contextMenu } from '$/stores/portals.svelte.js'
+    import { dialog } from '$/stores/portals.svelte.js'
     import ContextMenu from '$/components/atoms/context-menu.svelte'
 
     let { id, parent, share, settings } = $props()
@@ -10,11 +10,11 @@
         { name: 'Delete', action: async () => await io.remove(id, parent) },
         {
             name: 'Share',
-            action: (event) => contextMenu.show(event.target, share, 'bottom', '', event),
+            action: (event) => dialog.show(event.target, share, 'bottom', '', event),
         },
         {
             name: 'Settings',
-            action: (event) => contextMenu.show(event.target, settings, 'bottom', '', event),
+            action: (event) => dialog.show(event.target, settings, 'bottom', '', event),
         },
     ]
 </script>
