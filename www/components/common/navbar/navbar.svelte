@@ -9,16 +9,22 @@
 
 <div
     class={restProps.class ||
-        'backdrop-blur-lg border-b border-contrast h-11 grid grid-cols-3 px-2 py-2 w-full'}
+        'backdrop-blur-lg border-b border-contrast flex h-11 justify-between px-2 w-full'}
 >
-    <div class="flex flex-row gap-4 items-center justify-start">
-        {#if start}{@render start()}{/if}
+    <div class="basis-0 flex flex-grow flex-row gap-4 items-center justify-start">
+        {#if start}
+            {@render start()}
+        {/if}
     </div>
-    <div class="flex flex-row gap-4 items-center justify-start">
-        {#if middle}{@render middle()}{/if}
+    <div class="flex flex-row gap-4 items-center justify-center">
+        {#if middle}
+            {@render middle()}
+        {/if}
     </div>
-    <div class="flex flex-row gap-4 items-center justify-end">
-        {#if end}{@render end()}{/if}
+    <div class="basis-0 flex flex-grow flex-row gap-4 items-center justify-end">
+        {#if end}
+            {@render end()}
+        {/if}
         <DarkModeToggle />
         <DropdownMenu class="icon-btn" placement="bottom-end">
             <Icon icon="mdi:account" />

@@ -8,7 +8,7 @@ function createPortalStore() {
     let portal = $state(undefined)
 
     return {
-        get portal() {
+        get state() {
             return portal
         },
 

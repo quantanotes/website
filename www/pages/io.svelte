@@ -73,7 +73,6 @@
                 .map((node) => {
                     try {
                         let result = JSON.parse(node.content)
-                        console.log(result)
                         return result
                     } catch {
                         return undefined

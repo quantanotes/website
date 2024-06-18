@@ -2,7 +2,7 @@
     import { computePosition } from '@floating-ui/dom'
 
     let { portal } = $props()
-    
+
     let ref = $state()
     let style = $state('')
 
@@ -28,7 +28,7 @@
     })
 </script>
 
-<div class={portal.contextMenu === undefined ? 'invisible' : ''} bind:this={ref} {style}>
+<div class={portal.state === undefined ? 'invisible' : ''} bind:this={ref} {style}>
     {#if portal.state}
         {@render portal.state.component()}
     {/if}

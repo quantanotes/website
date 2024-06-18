@@ -1,6 +1,6 @@
 import createNodeStore from './nodes.svelte'
 
-const io = createNodeStore('thread')
+export const io = createNodeStore('thread')
 
 io.chat = async function* (thread, abort) {
     let reader

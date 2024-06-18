@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
     import auth from '$/stores/auth.svelte.js'
-    import { dialog, contextMenu } from '$/stores/portals.svelte'
+    import { dialog, contextMenu } from '$/stores/portals.svelte.js'
     import Portal from '$/components/common/portal.svelte'
 
     let { children } = $props()

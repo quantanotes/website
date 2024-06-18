@@ -1,7 +1,7 @@
 <script>
     import { dialog } from '$/stores/portals.svelte.js'
     import notes from '$/stores/notes.svelte.js'
-    import Actions from '$/components/atoms/context-menu.svelte'
+    import ContextMenu from '$/components/atoms/context-menu.svelte'
 
     let { id, parent, share } = $props()
 
@@ -15,4 +15,4 @@
     ]
 </script>
 
-<Actions {actions} />
+<ContextMenu {actions} />

@@ -2,7 +2,6 @@
     import { untrack } from 'svelte'
     import notes from '$/stores/notes.svelte.js'
     import Tiptap from '$/features/tiptap/tiptap.svelte'
-    import { blur } from 'svelte/transition'
 
     let setContent = $state()
     let saveTimeout = $state()
@@ -37,7 +36,7 @@
     }
 </script>
 
-<div class="h-full max-w-3xl mb-64 mx-auto prose prose-neutral dark:prose-invert px-4 py-2 w-full">
+<div class="h-full max-w-[51rem] mb-64 mx-auto prose prose-neutral dark:prose-invert py-2 w-full">
     <div class={!notes.current && 'hidden'}>
         <Tiptap onupdate={handleUpdate} bind:setContent />
     </div>

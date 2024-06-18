@@ -9,6 +9,7 @@
     import Title from './extensions/title'
     import Draggable from './extensions/draggable'
     import { EditorState } from '@tiptap/pm/state'
+    import { hideDragHandle } from './extensions/draggable/draggable'
 
     /** @type {{ onupdate: ((editor: Editor) => void), setContent: (title: string, content: string) => void  }} */
     let { onupdate, setContent } = $props()
@@ -61,9 +62,14 @@
     })
 </script>
 
-<div bind:this={element} />
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div bind:this={element} onmouseleave={hideDragHandle}></div>
 
 <style lang="postcss">
+    :global(.tiptap) {
+        @apply px-10;
+    }
+
     :global(.ProseMirror p.is-editor-empty:first-child::before) {
         @apply text-contrast;
         content: attr(data-placeholder);

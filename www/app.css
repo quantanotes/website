@@ -38,11 +38,15 @@
     }
 
     .icon-btn {
-        @apply h-fit text-lg leading-[0px] text-contrast transition hover:text-secondary;
+        @apply h-fit leading-[0px] text-contrast transition hover:text-secondary;
+    }
+    
+    .input {
+        @apply border border-contrast bg-primary px-4 py-2 text-secondary transition-colors placeholder:text-contrast-light hover:border-contrast-light focus:border-secondary focus:outline-none w-full;
     }
 
-    .input {
-        @apply w-full border border-contrast bg-primary px-4 py-2 text-secondary transition-colors placeholder:text-contrast-light hover:border-contrast-light focus:border-secondary focus:outline-none;
+    .input-xl {
+        @apply bg-primary focus-within:border border-x border-contrast focus-within:border-secondary h-full flex-grow min-w-0 px-5 py-2 focus-within:shadow-md focus-within:translate-y-2 transition w-full;
     }
 
     .range {

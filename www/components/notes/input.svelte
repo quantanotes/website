@@ -15,7 +15,7 @@
 </script>
 
 <div
-    class="bg-primary focus-within:border border-x border-contrast focus-within:border-secondary h-full px-5 py-2 focus-within:shadow-md focus-within:translate-y-2 transition w-full"
+    class="input-xl"
     onfocusin={() => (focus = true)}
     onfocusout={() => (focus = false)}
 >

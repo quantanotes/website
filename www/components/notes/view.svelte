@@ -8,7 +8,7 @@
     let view = $derived(notes.map[notes.current]?.view || 'note')
 </script>
 
-<div class="transition-all py-2 px-8" style={`margin-left: ${showSidebar ? sidebarWidth : 0}px`}>
+<div class="transition-all p-2" style={`margin-left: ${showSidebar ? sidebarWidth : 0}px`}>
     {#if view === 'note'}
         <Editor />
     {:else if view == 'table'}

@@ -32,7 +32,6 @@ const DraggablePlugin = new Plugin({
         })
         view.dom.parentElement.append(dragHandleElement)
         const dragHandleComponent = mount(DragHandle, { target: dragHandleElement })
-
         hideDragHandle()
 
         return {
@@ -46,7 +45,7 @@ const DraggablePlugin = new Plugin({
 
     props: {
         handleDOMEvents: {
-            mousemove: (view, event) => {
+            mousemove(view, event) {
                 if (!view.editable) {
                     return
                 }
@@ -81,19 +80,24 @@ const DraggablePlugin = new Plugin({
                 dragHandleElement.style.top = `${rect.top}px`
                 showDragHandle()
             },
-            keydown: () => {
+
+            keydown() {
                 hideDragHandle()
             },
-            mousewheel: () => {
+
+            mousewheel() {
                 hideDragHandle()
             },
+
             dragstart(view) {
                 view.dom.classList.add('dragging')
             },
+
             drop(view) {
                 view.dom.classList.remove('dragging')
                 hideDragHandle()
             },
+
             dragend(view) {
                 view.dom.classList.remove('dragging')
             },
@@ -195,7 +199,7 @@ function handleClick(event, view) {
     view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos)))
 }
 
-function hideDragHandle() {
+export function hideDragHandle() {
     if (dragHandleElement) {
         dragHandleElement.classList.add('opacity-0', 'pointer-events-none')
     }

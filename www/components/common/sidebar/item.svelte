@@ -1,27 +1,25 @@
 <script>
-    import { fade } from 'svelte/transition'
     import Icon from '@iconify/svelte'
     import DropdownMenu from '$/components/atoms/dropdown-menu.svelte'
 
-    let { id, state: _state, contextMenu } = $props()
+    let { id, state, contextMenu } = $props()
     let expanded = $state(false)
-    let children = $derived(_state.map[id]?.children.toSorted(sorter).filter(_filter) || [])
+    let children = $derived(state.map[id]?.children.toSorted(sorter).filter(_filter) || [])
     // Counts nested drag enters
     let dragEnterCount = $state(0)
     // Checks if we need to expand due to drag and drop
     let dragExpanded = $derived(
-        dragEnterCount > 0 &&
-            !(_state.moving === id || _state.ascendants(id).includes(_state.moving)),
+        dragEnterCount > 0 && !(state.moving === id || state.ascendants(id).includes(state.moving)),
     )
 
     function expand() {
-        if (!expanded) _state.children(id)
+        if (!expanded) state.children(id)
         expanded = !expanded
     }
 
     function handleDragStart(event) {
         event.stopPropagation()
-        _state.moving = id
+        state.moving = id
         event.dataTransfer.setData('text/plain', id)
     }
 
@@ -29,8 +27,8 @@
         event.preventDefault()
         dragEnterCount++
         if (!expanded && dragExpanded && dragEnterCount == 1) {
-            _state.dragover = id
-            _state.children(id)
+            state.dragover = id
+            state.children(id)
         }
     }
 
@@ -46,29 +44,29 @@
     async function handleDrop(event) {
         event.preventDefault()
         // Copy so we can reset (avoiding a long if statement below)
-        const moving = _state.moving
-        const dragover = _state.dragover
-        _state.moving = ''
-        _state.dragover = ''
+        const moving = state.moving
+        const dragover = state.dragover
+        state.moving = ''
+        state.dragover = ''
         dragEnterCount = 0
         if (!moving || !dragover) return
         // If a parent is being dropped in to a child
-        if (_state.ascendants(id).includes(moving)) return
+        if (state.ascendants(id).includes(moving)) return
         // If it's dropping in to the same parent
-        if (dragover === _state.map[moving].parent) return
+        if (dragover === state.map[moving].parent) return
         // Make sure the UI is expanded so we can see where we dropped
         expanded = true
         if (dragover === moving) return
-        await _state.move(moving, id)
+        await state.move(moving, id)
     }
 
     function sorter(a, b) {
-        return _state.map[a]?.title.localeCompare(_state.map[b]?.title || '') || false
+        return state.map[a]?.title.localeCompare(state.map[b]?.title || '') || false
     }
 
     // We need to filter the child nodes for certain node categories as they are not to be displayed
     function _filter(node) {
-        return !['message', 'link', 'record'].includes(_state.map[node].category)
+        return !['message', 'link', 'record'].includes(state.map[node].category)
     }
 </script>
 
@@ -91,24 +89,24 @@
         </button>
 
         <button
-            class={`hover:font-bold transition text-left truncate w-full ${(id == _state.current || dragEnterCount > 0) && 'font-bold'}`}
-            onclick={() => _state.open(id)}
+            class={`hover:font-bold transition text-left truncate w-full ${(id == state.current || dragEnterCount > 0) && 'font-bold'}`}
+            onclick={() => state.open(id)}
         >
-            {_state.map[id]?.title}
+            {state.map[id]?.title}
         </button>
 
         <DropdownMenu class="h-[24px] icon-btn">
             <Icon icon="mdi:dots-horizontal" />
             {#snippet menu()}
-                {@render contextMenu(id, _state.map[id].parent)}
+                {@render contextMenu(id, state.map[id].parent)}
             {/snippet}
         </DropdownMenu>
     </div>
 
     {#if expanded || dragExpanded}
-        <div class="ml-2" transition:fade={{ duration: 100 }}>
+        <div class="ml-2">
             {#each children as id}
-                <svelte:self {id} state={_state} {contextMenu} />
+                <svelte:self {id} {state} {contextMenu} />
             {/each}
         </div>
     {/if}
